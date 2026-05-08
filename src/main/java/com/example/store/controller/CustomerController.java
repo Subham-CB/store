@@ -1,6 +1,7 @@
 package com.example.store.controller;
 
 import com.example.store.dto.CustomerDTO;
+import com.example.store.dto.CustomerRequestDTO;
 import com.example.store.entity.Customer;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.repository.CustomerRepository;
@@ -27,7 +28,7 @@ public class CustomerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CustomerDTO createCustomer(@RequestBody Customer customer) {
-        return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+    public CustomerDTO createCustomer(@RequestBody CustomerRequestDTO customerRequestDTO) {
+        return customerMapper.customerToCustomerDTO(customerRepository.save(customerMapper.customerRequestDTOToCustomer(customerRequestDTO)));
     }
 }

@@ -1,6 +1,7 @@
 package com.example.store.controller;
 
 import com.example.store.dto.OrderDTO;
+import com.example.store.dto.OrderRequestDTO;
 import com.example.store.entity.Order;
 import com.example.store.mapper.OrderMapper;
 import com.example.store.repository.OrderRepository;
@@ -27,7 +28,7 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderDTO createOrder(@RequestBody Order order) {
-        return orderMapper.orderToOrderDTO(orderRepository.save(order));
+    public OrderDTO createOrder(@RequestBody OrderRequestDTO orderRequestDTO) {
+        return orderMapper.orderToOrderDTO(orderRepository.save(orderMapper.orderRequestDTOToOrder(orderRequestDTO)));
     }
 }
