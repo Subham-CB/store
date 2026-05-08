@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3-reset-sequences
+      author: de.subham1@gmail.com
+      changes:
+        - sqlFile:
+            path: db/changelog/maintenance.sql
