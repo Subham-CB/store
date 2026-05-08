@@ -6,9 +6,12 @@ import com.example.store.entity.Customer;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.repository.CustomerRepository;
 
+import com.example.store.service.CustomerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,17 +21,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerController {
 
-    private final CustomerRepository customerRepository;
-    private final CustomerMapper customerMapper;
+    private final CustomerService customerService;
 
     @GetMapping
-    public List<CustomerDTO> getAllCustomers() {
-        return customerMapper.customersToCustomerDTOs(customerRepository.findAll());
+    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(customerService.findAllCustomers());
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public CustomerDTO createCustomer(@RequestBody CustomerRequestDTO customerRequestDTO) {
-        return customerMapper.customerToCustomerDTO(customerRepository.save(customerMapper.customerRequestDTOToCustomer(customerRequestDTO)));
+    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody @Valid CustomerRequestDTO customerRequestDTO) {
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(customerService.createCustomer(customerRequestDTO));
     }
 }
