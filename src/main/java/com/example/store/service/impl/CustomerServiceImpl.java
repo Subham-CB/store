@@ -2,10 +2,13 @@ package com.example.store.service.impl;
 
 import com.example.store.dto.CustomerDTO;
 import com.example.store.dto.CustomerRequestDTO;
+import com.example.store.entity.Customer;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.repository.CustomerRepository;
 import com.example.store.service.CustomerService;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +27,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO createCustomer(CustomerRequestDTO customerRequestDTO) {
-        return customerMapper.customerToCustomerDTO(customerRepository.save(customerMapper.customerRequestDTOToCustomer(customerRequestDTO)));
+
+        Customer customer = customerMapper.customerRequestDTOToCustomer(customerRequestDTO);
+
+        return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
     }
 }

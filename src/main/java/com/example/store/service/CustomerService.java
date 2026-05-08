@@ -7,8 +7,7 @@ import java.util.List;
 
 public interface CustomerService {
 
-    List<CustomerDTO> findAllCustomers ();
+    List<CustomerDTO> findAllCustomers();
 
     CustomerDTO createCustomer(CustomerRequestDTO customerRequestDTO);
-
 }

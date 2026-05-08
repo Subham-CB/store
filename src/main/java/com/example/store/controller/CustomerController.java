@@ -2,12 +2,10 @@ package com.example.store.controller;
 
 import com.example.store.dto.CustomerDTO;
 import com.example.store.dto.CustomerRequestDTO;
-import com.example.store.entity.Customer;
-import com.example.store.mapper.CustomerMapper;
-import com.example.store.repository.CustomerRepository;
-
 import com.example.store.service.CustomerService;
+
 import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -26,14 +24,12 @@ public class CustomerController {
     @GetMapping
     public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(customerService.findAllCustomers());
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.findAllCustomers());
     }
 
     @PostMapping
     public ResponseEntity<CustomerDTO> createCustomer(@RequestBody @Valid CustomerRequestDTO customerRequestDTO) {
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(customerService.createCustomer(customerRequestDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(customerService.createCustomer(customerRequestDTO));
     }
 }
