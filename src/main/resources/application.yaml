@@ -14,6 +14,12 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
+global:
+  search:
+    sort-field: id
+    limit: 30
+    sort-direction: asc
+
 customer:
   search:
     sort-field: name

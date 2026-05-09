@@ -58,7 +58,7 @@ class CustomerControllerTests {
         mockPageable = PageRequest.of(0,10);
 
         when(customerSearchProps.getLimit()).thenReturn(20);
-        when(customerSearchProps.getSortField()).thenReturn("id");
+        when(customerSearchProps.getSortField()).thenReturn("name");
         when(customerSearchProps.getDirection()).thenReturn("asc");
 
         when(pageableBuilder.buildPageable(any(), any(), any(), any(), anyInt(), anyString(), anyString()))

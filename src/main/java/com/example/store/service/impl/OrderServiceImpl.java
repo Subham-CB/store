@@ -13,6 +13,7 @@ import com.example.store.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,8 +27,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
 
     @Override
-    public List<OrderDTO> findAllOrders() {
-        return orderMapper.ordersToOrderDTOs(orderRepository.findAll());
+    public List<OrderDTO> findAllOrders(Pageable pageable) {
+        return orderMapper.ordersToOrderDTOs(orderRepository.findAll(pageable).getContent());
     }
 
     @Override

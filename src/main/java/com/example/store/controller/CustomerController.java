@@ -32,8 +32,8 @@ public class CustomerController {
     @GetMapping
     public ResponseEntity<List<CustomerDTO>> getCustomers(
             @RequestParam(required = false) final String name,
-            @RequestParam(required = false) @Min(value= 0, message = "") final Integer page,
-            @RequestParam(required = false) @Min(value = 5, message = "") final Integer limit,
+            @RequestParam(required = false) @Min(value= 0, message = "Min page number is 0") final Integer page,
+            @RequestParam(required = false) @Min(value = 5, message = "Min limit is 5") final Integer limit,
             @RequestParam(required = false) final String sortBy,
             @RequestParam(required = false) final SortEnumDTO sortDir) {
 

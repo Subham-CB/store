@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,6 +15,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
@@ -34,9 +36,25 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST,"Validation Failed",request,errors);
     }
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponseDTO> handleTypeMismatch(
+            MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
+        String message = String.format("Parameter '%s' expected type asc or desc, but received '%s'",
+                ex.getName(),
+                ex.getValue());
+        return build(HttpStatus.BAD_REQUEST, message, request);
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponseDTO> handleConstraintViolation(ConstraintViolationException ex,HttpServletRequest request) {
         return build(HttpStatus.BAD_REQUEST,ex.getMessage(),request);
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<ErrorResponseDTO> handlePropertyReference(
+            PropertyReferenceException ex, HttpServletRequest request) {
+        String message = String.format("The field '%s' does not exist on this resource", ex.getPropertyName());
+        return build(HttpStatus.BAD_REQUEST, message, request);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -70,7 +88,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGeneric(
             Exception ex,HttpServletRequest request){
-        ex.printStackTrace();
         return build(HttpStatus.INTERNAL_SERVER_ERROR,"An unexpected error occurred. Please try again later.",request);
     }
 
