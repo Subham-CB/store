@@ -83,4 +83,16 @@ class OrderControllerTests {
                 .andExpect(jsonPath("$[0].customer.id").value(1))
                 .andExpect(jsonPath("$[0].customer.name").value("John Doe"));
     }
+
+    void testGetOrderById() throws Exception {
+        Long orderId = 1L;
+        when(orderService.findOrderById(orderId)).thenReturn(orderDTO);
+
+        mockMvc.perform(get("/order/{id}",orderId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.description").value("Test Order"))
+                .andExpect(jsonPath("$.customer.id").value(1))
+                .andExpect(jsonPath("$.customer.name").value("John Doe"));
+    }
 }

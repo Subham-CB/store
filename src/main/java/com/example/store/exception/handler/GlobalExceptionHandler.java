@@ -2,7 +2,9 @@ package com.example.store.exception.handler;
 
 import com.example.store.dto.ErrorResponseDTO;
 import com.example.store.exception.CustomerNotFoundException;
+import com.example.store.exception.OrderNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,11 @@ public class GlobalExceptionHandler {
                 errors.put(err.getField(),err.getDefaultMessage()));
 
         return build(HttpStatus.BAD_REQUEST,"Validation Failed",request,errors);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponseDTO> handleConstraintViolation(ConstraintViolationException ex,HttpServletRequest request) {
+        return build(HttpStatus.BAD_REQUEST,ex.getMessage(),request);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -62,12 +69,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGeneric(
             Exception ex,HttpServletRequest request){
+        ex.printStackTrace();
         return build(HttpStatus.INTERNAL_SERVER_ERROR,"An unexpected error occurred. Please try again later.",request);
     }
 
     @ExceptionHandler(CustomerNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> customerNotFound(CustomerNotFoundException ex,HttpServletRequest request){
+        return build(HttpStatus.NOT_FOUND,ex.getMessage(),request);
+    }
 
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> orderNotFound(OrderNotFoundException ex,HttpServletRequest request){
         return build(HttpStatus.NOT_FOUND,ex.getMessage(),request);
     }
 
