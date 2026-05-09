@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,6 +89,7 @@ public class GlobalExceptionHandler {
         log.error("API Error : [Status : {}] [Path : {}] [Message : {}]",status.value(),request.getRequestURI(),message);
 
         ErrorResponseDTO body = new ErrorResponseDTO(
+                LocalDateTime.now(),
                 status.value(),
                 status.getReasonPhrase(),
                 message,

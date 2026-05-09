@@ -13,3 +13,9 @@ spring:
         default_batch_fetch_size: 10
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
+
+customer:
+  search:
+    sort-field: name
+    limit: 20
+    sort-direction: asc
