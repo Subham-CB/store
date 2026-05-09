@@ -23,7 +23,6 @@ public class CustomerController {
 
     @GetMapping
     public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
-
         return ResponseEntity.status(HttpStatus.OK).body(customerService.findAllCustomers());
     }
 
