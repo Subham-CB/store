@@ -30,7 +30,7 @@ public class CustomerController {
     private final PageableBuilder pageableBuilder;
 
     @GetMapping
-    public ResponseEntity<List<CustomerDTO>> getCustomers(
+    public ResponseEntity<List<CustomerDTO>> findCustomers(
             @RequestParam(required = false) final String name,
             @RequestParam(required = false) @Min(value = 0, message = "Min page number is 0") final Integer page,
             @RequestParam(required = false) @Min(value = 5, message = "Min limit is 5") final Integer limit,
@@ -48,6 +48,11 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(customerService.findCustomersNameContainingSubString(pageable, name));
         }
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<CustomerDTO> findCustomerById(@PathVariable @Min(value=1, message = "Invalid ID value. Please enter a valid ID") final Long id){
+        return ResponseEntity.ok(customerService.findCustomerById(id));
     }
 
     @PostMapping

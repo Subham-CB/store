@@ -3,6 +3,7 @@ package com.example.store.service.impl;
 import com.example.store.dto.CustomerDTO;
 import com.example.store.dto.CustomerRequestDTO;
 import com.example.store.entity.Customer;
+import com.example.store.exception.CustomerNotFoundException;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.repository.CustomerRepository;
 import com.example.store.service.CustomerService;
@@ -55,5 +56,14 @@ public class CustomerServiceImpl implements CustomerService {
     @CacheEvict(value = "customers",allEntries = true)
     @Override
     public void clearCustomersCache() {
+    }
+
+    @Cacheable(value = "customers",key = "'id_'+#id")
+    @Override
+    public CustomerDTO findCustomerById(final Long id) {
+        Customer customer = customerRepository.findCustomerById(id)
+                .orElseThrow(()-> new CustomerNotFoundException(id));
+
+        return customerMapper.customerToCustomerDTO(customer);
     }
 }
