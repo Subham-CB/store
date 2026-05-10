@@ -69,13 +69,13 @@ class OrderControllerTests {
         orderRequestDTO.setDescription("Test Order");
         orderRequestDTO.setCustomerId(1L);
 
-        mockPageable = PageRequest.of(0,10);
+        mockPageable = PageRequest.of(0, 10);
 
         when(globalSearchProp.getLimit()).thenReturn(20);
         when(globalSearchProp.getSortField()).thenReturn("id");
         when(globalSearchProp.getDirection()).thenReturn("asc");
 
-        when(pageableBuilder.buildPageable(any(),any(), any(), any(), anyInt(), anyString(), anyString()))
+        when(pageableBuilder.buildPageable(any(), any(), any(), any(), anyInt(), anyString(), anyString()))
                 .thenReturn(mockPageable);
     }
 
@@ -112,7 +112,7 @@ class OrderControllerTests {
         Long orderId = 1L;
         when(orderService.findOrderById(orderId)).thenReturn(orderDTO);
 
-        mockMvc.perform(get("/order/{id}",orderId))
+        mockMvc.perform(get("/order/{id}", orderId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.description").value("Test Order"))

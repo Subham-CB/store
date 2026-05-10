@@ -1,6 +1,7 @@
 package com.example.store.util;
 
 import com.example.store.dto.SortEnumDTO;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,7 +22,6 @@ public class PageableBuilder {
      * @param defaultSortDir the default sort direction from configuration
      * @return a Pageable object configured with the provided parameters or defaults
      */
-
     public Pageable buildPageable(
             final Integer page,
             final Integer size,
@@ -37,8 +37,8 @@ public class PageableBuilder {
         final String sortByValue = (sortBy != null) ? sortBy : defaultSortBy;
         final String sortDirValue = (sortDir != null) ? sortDir.name() : defaultSortDir;
 
-        final Sort sort = Sort.by(sortDirValue.equalsIgnoreCase("asc") ?
-                Sort.Direction.ASC : Sort.Direction.DESC, sortByValue);
+        final Sort sort =
+                Sort.by(sortDirValue.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortByValue);
 
         return PageRequest.of(pageValue, sizeValue, sort);
     }

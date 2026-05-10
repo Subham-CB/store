@@ -55,7 +55,7 @@ class CustomerControllerTests {
         customerDTO.setName("John Doe");
         customerDTO.setId(1L);
 
-        mockPageable = PageRequest.of(0,10);
+        mockPageable = PageRequest.of(0, 10);
 
         when(customerSearchProps.getLimit()).thenReturn(20);
         when(customerSearchProps.getSortField()).thenReturn("name");
@@ -63,7 +63,6 @@ class CustomerControllerTests {
 
         when(pageableBuilder.buildPageable(any(), any(), any(), any(), anyInt(), anyString(), anyString()))
                 .thenReturn(mockPageable);
-
     }
 
     @Test
@@ -96,12 +95,12 @@ class CustomerControllerTests {
 
     @Test
     @DisplayName("GET /customer - Search by name")
-    void testGetCustomers_WithName() throws Exception{
+    void testGetCustomers_WithName() throws Exception {
         String searchName = "John";
-        when(customerService.findCustomersNameContainingSubString(mockPageable,searchName)).thenReturn(List.of(customerDTO));
+        when(customerService.findCustomersNameContainingSubString(mockPageable, searchName))
+                .thenReturn(List.of(customerDTO));
 
-        mockMvc.perform(get("/customer")
-                        .param("name",searchName))
+        mockMvc.perform(get("/customer").param("name", searchName))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(1))
                 .andExpect(jsonPath("$[0].name").value("John Doe"));
