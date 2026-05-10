@@ -5,3 +5,11 @@ databaseChangeLog:
       changes:
         - sqlFile:
             path: db/changelog/maintenance.sql
+  - changeSet:
+     id: 3-add-order-customer-id-index
+     author: de.subham1@gmail.com
+     changes:
+       - sql:
+           sql: CREATE INDEX idx_order_customer_id On "order" (customer_id);
+
+
