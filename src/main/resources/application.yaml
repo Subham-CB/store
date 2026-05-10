@@ -13,3 +13,33 @@ spring:
         default_batch_fetch_size: 10
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
+  cache:
+    type: redis
+    redis:
+      time-to-live: 1800000
+      cache-null-values: false
+      use-key-prefix: true
+      key-prefix: "store_cache_"
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 5
+          min-idle: 1
+          max-wait: 1000ms
+
+
+global:
+  search:
+    sort-field: id
+    limit: 30
+    sort-direction: asc
+
+customer:
+  search:
+    sort-field: id
+    limit: 20
+    sort-direction: asc

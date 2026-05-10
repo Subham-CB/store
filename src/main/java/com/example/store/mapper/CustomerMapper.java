@@ -4,8 +4,8 @@ import com.example.store.dto.CustomerDTO;
 import com.example.store.dto.CustomerOrderDTO;
 import com.example.store.dto.CustomerRequestDTO;
 import com.example.store.entity.Customer;
-
 import com.example.store.entity.Order;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

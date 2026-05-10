@@ -38,20 +38,18 @@ paths:
       responses:
         '201':
           description: Created
-      operationId: createOrder
-      description: Create a new order
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                  format: int64
-                descriptioon:
-                  type: string
-
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+            operationId: createOrder
+            description: Create a new order
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/OrderInput'
+              required: true
   /order/{id}:
     get:
       summary: Get Order by ID

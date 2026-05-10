@@ -13,6 +13,9 @@ import com.example.store.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,31 +28,46 @@ public class OrderServiceImpl implements OrderService {
     private final CustomerRepository customerRepository;
     private final OrderMapper orderMapper;
 
+    @Cacheable(
+            value = "orders",
+            key = "'all_page_' + #pageable.pageNumber + '_size_' + #pageable.pageSize + '_sort_' + #pageable.sort"
+    )
     @Override
-    public List<OrderDTO> findAllOrders() {
-        return orderMapper.ordersToOrderDTOs(orderRepository.findAll());
+    public List<OrderDTO> findAllOrders(final Pageable pageable) {
+        return orderMapper.ordersToOrderDTOs(orderRepository.findAll(pageable).getContent());
     }
 
+    @CacheEvict(
+            value = "orders",
+            allEntries = true
+    )
     @Override
-    public OrderDTO createOrder(OrderRequestDTO orderRequestDTO) {
-
-        Order order = orderMapper.orderRequestDTOToOrder(orderRequestDTO);
+    public OrderDTO createOrder(final OrderRequestDTO orderRequestDTO) {
 
         Customer customer = customerRepository
                 .findById(orderRequestDTO.getCustomerId())
                 .orElseThrow(() -> new CustomerNotFoundException(orderRequestDTO.getCustomerId()));
 
+        final Order order = orderMapper.orderRequestDTOToOrder(orderRequestDTO);
         order.setCustomer(customer);
 
         return orderMapper.orderToOrderDTO(orderRepository.save(order));
     }
 
+    @Cacheable(
+            value = "orders",
+            key = "'Id_' + #orderId"
+    )
     @Override
-    public OrderDTO findOrderById(Long orderId) {
+    public OrderDTO findOrderById(final Long orderId) {
 
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(()->new OrderNotFoundException(orderId));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
 
         return orderMapper.orderToOrderDTO(order);
+    }
+
+    @CacheEvict(value = "orders",allEntries = true)
+    @Override
+    public void clearOrdersCache() {
     }
 }
