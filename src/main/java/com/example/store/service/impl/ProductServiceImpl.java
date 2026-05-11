@@ -1,12 +1,14 @@
 package com.example.store.service.impl;
 
 import com.example.store.dto.ProductDTO;
+import com.example.store.dto.ProductRequestDTO;
 import com.example.store.entity.Product;
 import com.example.store.exception.ProductNotFoundException;
 import com.example.store.mapper.ProductMapper;
 import com.example.store.repository.ProductRepository;
 import com.example.store.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,5 +43,16 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(()-> new ProductNotFoundException(id));
         return productMapper.productToProductDTO(product);
+    }
+
+    @CacheEvict(
+            value = "products",
+            allEntries = true
+    )
+    @Override
+    @Transactional
+    public ProductDTO createProduct(final ProductRequestDTO productRequestDTO) {
+        Product product = productMapper.productRequestDTOToProduct(productRequestDTO);
+        return productMapper.productToProductDTO(productRepository.save(product));
     }
 }

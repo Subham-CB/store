@@ -2,14 +2,17 @@ package com.example.store.controller;
 
 import com.example.store.component.GlobalSearchProp;
 import com.example.store.dto.ProductDTO;
+import com.example.store.dto.ProductRequestDTO;
 import com.example.store.dto.SortEnumDTO;
 import com.example.store.service.ProductService;
 import com.example.store.util.PageableBuilder;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/product")
 @RequiredArgsConstructor
+@Validated
 public class ProductController {
 
     private final ProductService productService;
@@ -42,5 +46,10 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> findProductById(@PathVariable final Long id){
         return ResponseEntity.status(HttpStatus.OK).body(productService.findProductById(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody @Valid final ProductRequestDTO productRequestDTO){
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(productRequestDTO));
     }
 }

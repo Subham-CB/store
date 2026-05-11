@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3-reset-sequences
+      author: Subham Dey
+      changes:
+        - sqlFile:
+            path: db/changelog/maintenance.sql

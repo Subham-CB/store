@@ -17,5 +17,4 @@ public class ProductRequestDTO {
     @Length(max = 225, message = "Description is too long")
     private String description;
 
-    private Set<Long> orderIds;
 }
