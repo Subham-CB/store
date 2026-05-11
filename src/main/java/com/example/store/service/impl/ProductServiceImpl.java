@@ -7,13 +7,14 @@ import com.example.store.exception.ProductNotFoundException;
 import com.example.store.mapper.ProductMapper;
 import com.example.store.repository.ProductRepository;
 import com.example.store.service.ProductService;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.util.List;
 
@@ -27,28 +28,21 @@ public class ProductServiceImpl implements ProductService {
 
     @Cacheable(
             value = "products",
-            key = "'all_page_' + #pageable.pageNumber + '_size_' + #pageable.pageSize + '_sort_' + #pageable.sort"
-    )
+            key = "'all_page_' + #pageable.pageNumber + '_size_' + #pageable.pageSize + '_sort_' + #pageable.sort")
     @Override
     public List<ProductDTO> findAllProducts(final Pageable pageable) {
-        return productMapper.productsToProductDTOs(productRepository.findAll(pageable).getContent());
+        return productMapper.productsToProductDTOs(
+                productRepository.findAll(pageable).getContent());
     }
 
-    @Cacheable(
-            value = "products",
-            key = "'Id_' + #id"
-    )
+    @Cacheable(value = "products", key = "'Id_' + #id")
     @Override
     public ProductDTO findProductById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(()-> new ProductNotFoundException(id));
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
         return productMapper.productToProductDTO(product);
     }
 
-    @CacheEvict(
-            value = "products",
-            allEntries = true
-    )
+    @CacheEvict(value = "products", allEntries = true)
     @Override
     @Transactional
     public ProductDTO createProduct(final ProductRequestDTO productRequestDTO) {
@@ -56,11 +50,7 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.productToProductDTO(productRepository.save(product));
     }
 
-    @CacheEvict(
-            value = "products",
-            allEntries = true
-    )
+    @CacheEvict(value = "products", allEntries = true)
     @Override
-    public void clearProductsCache() {
-    }
+    public void clearProductsCache() {}
 }

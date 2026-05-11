@@ -3,8 +3,8 @@ package com.example.store.exception.handler;
 import com.example.store.dto.ErrorResponseDTO;
 import com.example.store.exception.CustomerNotFoundException;
 import com.example.store.exception.OrderNotFoundException;
-
 import com.example.store.exception.ProductNotFoundException;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 
@@ -90,12 +90,6 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.NOT_FOUND, "The requested resource was not found", request);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDTO> handleGeneric(Exception ex, HttpServletRequest request) {
-        return build(
-                HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred. Please try again later.", request);
-    }
-
     @ExceptionHandler(CustomerNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> customerNotFound(CustomerNotFoundException ex, HttpServletRequest request) {
         return build(HttpStatus.NOT_FOUND, ex.getMessage(), request);
@@ -107,8 +101,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public  ResponseEntity<ErrorResponseDTO> productNotFound(ProductNotFoundException ex,HttpServletRequest request){
-        return build(HttpStatus.NOT_FOUND,ex.getMessage(),request);
+    public ResponseEntity<ErrorResponseDTO> productNotFound(ProductNotFoundException ex, HttpServletRequest request) {
+        return build(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponseDTO> handleGeneric(Exception ex, HttpServletRequest request) {
+        ex.printStackTrace();
+        return build(
+                HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred. Please try again later.", request);
     }
 
     private ResponseEntity<ErrorResponseDTO> build(HttpStatus status, String message, HttpServletRequest request) {

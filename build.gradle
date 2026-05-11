@@ -8,7 +8,11 @@ plugins {
 }
 
 group = 'com.example'
-version = '1.0.0-SNAPSHOT'
+version = '1.0.1'
+
+bootJar {
+    archiveFileName = 'store.jar'
+}
 
 java {
     toolchain {
@@ -47,7 +51,7 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.6.2'
     implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6'
 
     // Test dependencies
     testCompileOnly 'org.projectlombok:lombok'

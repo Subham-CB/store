@@ -4,14 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDTO {
+public class OrderProductsDTO {
     private Long id;
     private String description;
-    private OrderCustomerDTO customer;
-    private Set<OrderProductsDTO> products;
 }

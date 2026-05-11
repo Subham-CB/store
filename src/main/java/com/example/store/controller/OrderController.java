@@ -1,9 +1,9 @@
 package com.example.store.controller;
 
 import com.example.store.component.GlobalSearchProp;
+import com.example.store.dto.SortEnumDTO;
 import com.example.store.dto.order.OrderDTO;
 import com.example.store.dto.order.OrderRequestDTO;
-import com.example.store.dto.SortEnumDTO;
 import com.example.store.service.OrderService;
 import com.example.store.util.PageableBuilder;
 
@@ -37,7 +37,11 @@ public class OrderController {
             @RequestParam(required = false) final String sortBy,
             @RequestParam(required = false) final SortEnumDTO sortDir) {
 
-        Pageable pageable = pageableBuilder.buildPageable(page, limit, sortBy, sortDir,
+        Pageable pageable = pageableBuilder.buildPageable(
+                page,
+                limit,
+                sortBy,
+                sortDir,
                 globalSearchProp.getLimit(),
                 globalSearchProp.getSortField(),
                 globalSearchProp.getDirection());

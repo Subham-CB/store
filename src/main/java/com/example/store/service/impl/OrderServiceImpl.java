@@ -39,17 +39,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Cacheable(
             value = "orders",
-            key = "'all_page_' + #pageable.pageNumber + '_size_' + #pageable.pageSize + '_sort_' + #pageable.sort"
-    )
+            key = "'all_page_' + #pageable.pageNumber + '_size_' + #pageable.pageSize + '_sort_' + #pageable.sort")
     @Override
     public List<OrderDTO> findAllOrders(final Pageable pageable) {
         return orderMapper.ordersToOrderDTOs(orderRepository.findAll(pageable).getContent());
     }
 
-    @CacheEvict(
-            value = "orders",
-            allEntries = true
-    )
+    @CacheEvict(value = "orders", allEntries = true)
     @Override
     @Transactional
     public OrderDTO createOrder(final OrderRequestDTO orderRequestDTO) {
@@ -61,29 +57,22 @@ public class OrderServiceImpl implements OrderService {
         final Order order = orderMapper.orderRequestDTOToOrder(orderRequestDTO);
         order.setCustomer(customer);
 
-        if(orderRequestDTO.getProductIds() != null && !orderRequestDTO.getProductIds().isEmpty()){
+        Set<Long> requestedProductIds = orderRequestDTO.getProductIds();
+        Set<Product> products = new HashSet<>(productRepository.findAllById(requestedProductIds));
+        Set<Long> foundProductIds = products.stream().map(Product::getId).collect(Collectors.toSet());
+        Set<Long> missingProductIds = requestedProductIds.stream()
+                .filter(id -> !foundProductIds.contains(id))
+                .collect(Collectors.toSet());
 
-            Set<Long> requestedProductIds = orderRequestDTO.getProductIds();
-            Set<Product> products = new HashSet<>(productRepository.findAllById(requestedProductIds));
-            Set<Long> foundProductIds = products.stream()
-                    .map(Product::getId)
-                    .collect(Collectors.toSet());
-            Set<Long> missingProductIds = requestedProductIds.stream()
-                    .filter(id->!foundProductIds.contains(id))
-                    .collect(Collectors.toSet());
-
-            if (!missingProductIds.isEmpty()){
-                throw new ProductNotFoundException(missingProductIds);
-            }
-            order.setProducts(products);
+        if (!missingProductIds.isEmpty()) {
+            throw new ProductNotFoundException(missingProductIds);
         }
+        order.setProducts(products);
+
         return orderMapper.orderToOrderDTO(orderRepository.save(order));
     }
 
-    @Cacheable(
-            value = "orders",
-            key = "'Id_' + #orderId"
-    )
+    @Cacheable(value = "orders", key = "'Id_' + #orderId")
     @Override
     public OrderDTO findOrderById(final Long orderId) {
 
@@ -92,8 +81,7 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.orderToOrderDTO(order);
     }
 
-    @CacheEvict(value = "orders",allEntries = true)
+    @CacheEvict(value = "orders", allEntries = true)
     @Override
-    public void clearOrdersCache() {
-    }
+    public void clearOrdersCache() {}
 }

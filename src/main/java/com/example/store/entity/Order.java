@@ -2,16 +2,19 @@ package com.example.store.entity;
 
 import jakarta.persistence.*;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import org.hibernate.annotations.BatchSize;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "\"order\"")
 public class Order {
     @Id
@@ -28,8 +31,7 @@ public class Order {
     @JoinTable(
             name = "order_product",
             joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
     @BatchSize(size = 20)
     private Set<Product> products = new HashSet<>();
 }

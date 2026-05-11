@@ -1,0 +1,21 @@
+# Build output
+build/
+.gradle/
+
+# IDE files
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.vscode/
+
+# OS files
+.DS_Store
+
+# Node (utils tooling)
+utils/node_modules/
+node_modules/
+
+# Git
+.git/

@@ -1,9 +1,9 @@
 package com.example.store.controller;
 
 import com.example.store.component.CustomerSearchProps;
+import com.example.store.dto.SortEnumDTO;
 import com.example.store.dto.customer.CustomerDTO;
 import com.example.store.dto.customer.CustomerRequestDTO;
-import com.example.store.dto.SortEnumDTO;
 import com.example.store.service.CustomerService;
 import com.example.store.util.PageableBuilder;
 
@@ -39,7 +39,11 @@ public class CustomerController {
             @RequestParam(required = false) final String sortBy,
             @RequestParam(required = false) final SortEnumDTO sortDir) {
 
-        final Pageable pageable = pageableBuilder.buildPageable(page, limit, sortBy, sortDir,
+        final Pageable pageable = pageableBuilder.buildPageable(
+                page,
+                limit,
+                sortBy,
+                sortDir,
                 customerSearchProps.getLimit(),
                 customerSearchProps.getSortField(),
                 customerSearchProps.getDirection());
@@ -53,13 +57,13 @@ public class CustomerController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<CustomerDTO> findCustomerById(@PathVariable @Min(value=1, message = "Invalid ID value. Please enter a valid ID") final Long id){
+    public ResponseEntity<CustomerDTO> findCustomerById(
+            @PathVariable @Min(value = 1, message = "Invalid ID value. Please enter a valid ID") final Long id) {
         return ResponseEntity.ok(customerService.findCustomerById(id));
     }
 
     @PostMapping
     public ResponseEntity<CustomerDTO> createCustomer(@RequestBody @Valid final CustomerRequestDTO customerRequestDTO) {
-
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.createCustomer(customerRequestDTO));
     }
 }

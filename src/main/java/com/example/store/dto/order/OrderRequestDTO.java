@@ -13,8 +13,7 @@ public class OrderRequestDTO {
     @NotBlank(message = "Description is required")
     private String description;
 
-    @NotNull(message = "Customer ID is required")
-    private Long customerId;
+    @NotNull(message = "Customer ID is required") private Long customerId;
 
-    private Set<Long> productIds;
+    @NotNull(message = "Minimum 1 Product ID is required ") private Set<Long> productIds;
 }
