@@ -1,8 +1,8 @@
 package com.example.store.controller;
 
 import com.example.store.component.CustomerSearchProps;
-import com.example.store.dto.CustomerDTO;
-import com.example.store.dto.CustomerRequestDTO;
+import com.example.store.dto.customer.CustomerDTO;
+import com.example.store.dto.customer.CustomerRequestDTO;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.service.CustomerService;
 import com.example.store.util.PageableBuilder;

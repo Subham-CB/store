@@ -1,9 +1,9 @@
 package com.example.store.controller;
 
 import com.example.store.component.GlobalSearchProp;
-import com.example.store.dto.OrderCustomerDTO;
-import com.example.store.dto.OrderDTO;
-import com.example.store.dto.OrderRequestDTO;
+import com.example.store.dto.order.OrderCustomerDTO;
+import com.example.store.dto.order.OrderDTO;
+import com.example.store.dto.order.OrderRequestDTO;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.service.OrderService;
 import com.example.store.util.PageableBuilder;

@@ -1,8 +1,8 @@
 package com.example.store.controller;
 
 import com.example.store.component.GlobalSearchProp;
-import com.example.store.dto.ProductDTO;
-import com.example.store.dto.ProductRequestDTO;
+import com.example.store.dto.product.ProductDTO;
+import com.example.store.dto.product.ProductRequestDTO;
 import com.example.store.dto.SortEnumDTO;
 import com.example.store.service.ProductService;
 import com.example.store.util.PageableBuilder;

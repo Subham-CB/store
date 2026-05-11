@@ -1,17 +1,13 @@
-package com.example.store.dto;
+package com.example.store.dto.customer;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDTO {
+public class CustomerOrderDTO {
     private Long id;
     private String description;
-    private OrderCustomerDTO customer;
-    private Set<Long> productIds;
 }

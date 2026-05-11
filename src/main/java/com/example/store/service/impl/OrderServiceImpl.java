@@ -1,7 +1,7 @@
 package com.example.store.service.impl;
 
-import com.example.store.dto.OrderDTO;
-import com.example.store.dto.OrderRequestDTO;
+import com.example.store.dto.order.OrderDTO;
+import com.example.store.dto.order.OrderRequestDTO;
 import com.example.store.entity.Customer;
 import com.example.store.entity.Order;
 import com.example.store.entity.Product;
