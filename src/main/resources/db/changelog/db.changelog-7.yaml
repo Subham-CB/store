@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 7-add-order-product-product-id-index
+      author: Subham Dey
+      changes:
+        - sql:
+            sql: CREATE INDEX IF NOT EXISTS idx_order_product_product_id ON order_product (product_id);

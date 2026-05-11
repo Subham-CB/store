@@ -55,4 +55,12 @@ public class ProductServiceImpl implements ProductService {
         Product product = productMapper.productRequestDTOToProduct(productRequestDTO);
         return productMapper.productToProductDTO(productRepository.save(product));
     }
+
+    @CacheEvict(
+            value = "products",
+            allEntries = true
+    )
+    @Override
+    public void clearProductsCache() {
+    }
 }
