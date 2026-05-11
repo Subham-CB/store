@@ -108,6 +108,9 @@ class OrderControllerTests {
                 .andExpect(jsonPath("$[0].customer.name").value("John Doe"));
     }
 
+
+    @Test
+    @DisplayName("GET /order/{id} - Find by id")
     void testGetOrderById() throws Exception {
         Long orderId = 1L;
         when(orderService.findOrderById(orderId)).thenReturn(orderDTO);

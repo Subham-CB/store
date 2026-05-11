@@ -15,11 +15,13 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
@@ -37,6 +39,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @CacheEvict(value = "customers", allEntries = true)
     @Override
+    @Transactional
     public CustomerDTO createCustomer(final CustomerRequestDTO customerRequestDTO) {
 
         Customer customer = customerMapper.customerRequestDTOToCustomer(customerRequestDTO);

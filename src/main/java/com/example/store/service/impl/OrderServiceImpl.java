@@ -17,11 +17,13 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -42,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
             allEntries = true
     )
     @Override
+    @Transactional
     public OrderDTO createOrder(final OrderRequestDTO orderRequestDTO) {
 
         Customer customer = customerRepository
