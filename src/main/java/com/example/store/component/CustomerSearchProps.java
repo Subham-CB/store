@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class CustomerSearchProps {
-    @Value("${customer.search.sort-field:id}")
+    @Value("${customer.search.sort-field:name}")
     private String sortField;
 
     @Value("${customer.search.limit:10}")

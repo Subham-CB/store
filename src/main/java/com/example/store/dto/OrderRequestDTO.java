@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 public class OrderRequestDTO {
 
@@ -13,4 +15,6 @@ public class OrderRequestDTO {
 
     @NotNull(message = "Customer ID is required")
     private Long customerId;
+
+    private Set<Long> productIds;
 }

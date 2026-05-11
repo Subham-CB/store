@@ -40,6 +40,6 @@ global:
 
 customer:
   search:
-    sort-field: id
+    sort-field: name
     limit: 20
     sort-direction: asc

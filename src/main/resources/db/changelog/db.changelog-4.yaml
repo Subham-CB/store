@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 4-products
-      author: de.subham1@gmail.com
+      author: Subham Dey
       changes:
         - createTable:
             tableName: product
@@ -26,7 +26,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     foreignKeyName: fk_order_product_order
-                    references: "order"(id)
+                    references: '"order"(id)'
               - column:
                   name: product_id
                   type: BIGINT

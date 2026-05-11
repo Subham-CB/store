@@ -6,7 +6,9 @@ import lombok.Data;
 import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -29,5 +31,5 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     @BatchSize(size = 20)
-    private List<Product> products = new ArrayList<>();
+    private Set<Product> products = new HashSet<>();
 }

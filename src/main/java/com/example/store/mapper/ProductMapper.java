@@ -8,6 +8,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
@@ -22,9 +24,9 @@ public interface ProductMapper {
     Product productRequestDTOToProduct(ProductRequestDTO productRequestDTO);
 
 
-    default List<Long> mapOrdersToIds(List<Order> orders){
+    default Set<Long> mapOrdersToIds(Set<Order> orders){
         return orders.stream()
                 .map(Order::getId)
-                .toList();
+                .collect(Collectors.toSet());
     }
 }

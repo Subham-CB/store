@@ -31,7 +31,7 @@ public class OrderController {
     private final GlobalSearchProp globalSearchProp;
 
     @GetMapping
-    public ResponseEntity<List<OrderDTO>> getAllOrders(
+    public ResponseEntity<List<OrderDTO>> findAllOrders(
             @RequestParam(required = false) @Min(value = 0, message = "Min page number is 0") final Integer page,
             @RequestParam(required = false) @Min(value = 5, message = "Min limit is 5") final Integer limit,
             @RequestParam(required = false) final String sortBy,
