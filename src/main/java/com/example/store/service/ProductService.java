@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ProductService {
     List<ProductDTO> findAllProducts(Pageable pageable);
+
+    ProductDTO findProductById(Long id);
 }

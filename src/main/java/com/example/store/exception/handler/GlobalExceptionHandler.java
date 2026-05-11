@@ -4,6 +4,7 @@ import com.example.store.dto.ErrorResponseDTO;
 import com.example.store.exception.CustomerNotFoundException;
 import com.example.store.exception.OrderNotFoundException;
 
+import com.example.store.exception.ProductNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 
@@ -91,7 +92,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGeneric(Exception ex, HttpServletRequest request) {
-        ex.printStackTrace();
         return build(
                 HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred. Please try again later.", request);
     }
@@ -104,6 +104,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> orderNotFound(OrderNotFoundException ex, HttpServletRequest request) {
         return build(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public  ResponseEntity<ErrorResponseDTO> productNotFound(ProductNotFoundException ex,HttpServletRequest request){
+        return build(HttpStatus.NOT_FOUND,ex.getMessage(),request);
     }
 
     private ResponseEntity<ErrorResponseDTO> build(HttpStatus status, String message, HttpServletRequest request) {
