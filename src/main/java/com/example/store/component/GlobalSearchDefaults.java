@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-public class GlobalSearchProp {
+public class GlobalSearchDefaults {
 
     @Value("${global.search.sort-field:id}")
     private String sortField;

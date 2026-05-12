@@ -1,9 +1,9 @@
 package com.example.store.controller;
 
-import com.example.store.component.GlobalSearchProp;
-import com.example.store.dto.order.OrderCustomerDTO;
-import com.example.store.dto.order.OrderDTO;
-import com.example.store.dto.order.OrderRequestDTO;
+import com.example.store.api.model.OrderCustomerDTO;
+import com.example.store.api.model.OrderDTO;
+import com.example.store.api.model.OrderRequestDTO;
+import com.example.store.component.GlobalSearchDefaults;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.service.OrderService;
 import com.example.store.util.PageableBuilder;
@@ -45,7 +45,7 @@ class OrderControllerTests {
     private OrderService orderService;
 
     @MockitoBean
-    private GlobalSearchProp globalSearchProp;
+    private GlobalSearchDefaults globalSearchProp;
 
     @MockitoBean
     private PageableBuilder pageableBuilder;

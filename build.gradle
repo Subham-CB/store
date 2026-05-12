@@ -5,10 +5,14 @@ plugins {
     id 'org.liquibase.gradle' version '2.2.0'
     id 'com.diffplug.spotless' version '6.25.0'
     id 'jacoco'
+    id 'org.openapi.generator' version '7.5.0'
 }
 
 group = 'com.example'
 version = '1.0.1'
+
+def generatedRoot = project.layout.buildDirectory.dir("generated")
+def generatedJavaDir = project.layout.buildDirectory.dir("generated/src/main/java")
 
 bootJar {
     archiveFileName = 'store.jar'
@@ -26,12 +30,39 @@ repositories {
 
 spotless {
     java {
+        target 'src/**/*.java'
         palantirJavaFormat('2.50.0')
                 .style('PALANTIR')
                 .formatJavadoc(true)
         importOrder('com', 'jakarta', 'lombok', 'org', '', 'javax|java', '\\#')
         removeUnusedImports()
         formatAnnotations()
+    }
+}
+
+openApiGenerate{
+    generatorName = "spring"
+    inputSpec = "$rootDir/src/main/resources/openapi/openapi.yaml"
+    outputDir = generatedRoot.get().asFile.toString()
+
+    apiPackage = "com.example.store.api"
+    modelPackage = "com.example.store.api.model"
+    invokerPackage ="com.example.store.api.invoker"
+
+    configOptions = [
+            interfaceOnly   : "true",
+            useSpringBoot3  : "true",
+            useTags         : "true",
+            dateLibrary     : "java8",
+            skipDefaultInterface : "false"
+    ]
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir generatedJavaDir
+        }
     }
 }
 
@@ -49,9 +80,10 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     implementation 'org.mapstruct:mapstruct:1.6.2'
-    implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 
     // Test dependencies
     testCompileOnly 'org.projectlombok:lombok'
@@ -60,8 +92,10 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
 
+}
 
-
+tasks.named('compileJava') {
+    dependsOn tasks.named('openApiGenerate')
 }
 
 tasks.named('test') {

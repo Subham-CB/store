@@ -1,0 +1,460 @@
+openapi: 3.0.0
+info:
+  title: store
+  version: '2.0'
+  description: A simple  store API
+  contact:
+    name: SecuritEase Dev
+    url: 'https://www.securitease.com'
+    email: internal@securitease.com
+  termsOfService: 'https://www.securitease.com'
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - url: 'http://localhost:8080'
+    description: dev
+tags:
+  - name: order
+    description: Order operations
+  - name: customer
+    description: Customer operations
+  - name: product
+    description: Product operations
+paths:
+  /order:
+    get:
+      summary: Get Orders
+      operationId: getOrders
+      description: Get all orders with optional pagination and sorting
+      tags:
+        - order
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sortBy'
+        - $ref: '#/components/parameters/sortDir'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    post:
+      summary: Create Order
+      operationId: createOrder
+      description: Create a new order
+      tags:
+        - order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequestDTO'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /order/{id}:
+    get:
+      summary: Get Order by ID
+      operationId: getOrderById
+      description: Get a single order by its ID
+      tags:
+        - order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDTO'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /customer:
+    get:
+      summary: Get Customers
+      operationId: getCustomers
+      description: Get all customers with optional filtering, pagination and sorting
+      tags:
+        - customer
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter customers by name
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sortBy'
+        - $ref: '#/components/parameters/sortDir'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    post:
+      summary: Create Customer
+      operationId: createCustomer
+      description: Create a new customer
+      tags:
+        - customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequestDTO'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /customer/{id}:
+    get:
+      summary: Get Customer by ID
+      operationId: getCustomerById
+      description: Get a single customer by their ID
+      tags:
+        - customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerDTO'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /product:
+    get:
+      summary: Get Products
+      operationId: getProducts
+      description: Get all products with optional pagination and sorting
+      tags:
+        - product
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sortBy'
+        - $ref: '#/components/parameters/sortDir'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    post:
+      summary: Create Product
+      operationId: createProduct
+      description: Create a new product
+      tags:
+        - product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequestDTO'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDTO'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /product/{id}:
+    get:
+      summary: Get Product by ID
+      operationId: getProductById
+      description: Get a single product by its ID
+      tags:
+        - product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDTO'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+components:
+  parameters:
+    page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+      description: Page number (0-based)
+    limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+      description: Number of items per page
+    sortBy:
+      name: sortBy
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Field name to sort by
+    sortDir:
+      name: sortDir
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/SortEnumDTO'
+      description: Sort direction
+
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseDTO'
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseDTO'
+    ServiceUnavailable:
+      description: Service Unavailable (database error)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponseDTO'
+
+  schemas:
+    SortEnumDTO:
+      type: string
+      enum:
+        - ASC
+        - DESC
+      description: Sort direction
+
+    OrderDTO:
+      title: OrderDTO
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+        customer:
+          $ref: '#/components/schemas/OrderCustomerDTO'
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderProductDTO'
+          uniqueItems: true
+
+    OrderRequestDTO:
+      title: OrderRequestDTO
+      type: object
+      required:
+        - description
+        - customerId
+        - productIds
+      properties:
+        description:
+          type: string
+          description: Description is required
+        customerId:
+          type: integer
+          format: int64
+          description: Customer ID is required
+        productIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          uniqueItems: true
+          description: Minimum 1 Product ID is required
+
+    OrderCustomerDTO:
+      title: OrderCustomerDTO
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+
+    OrderProductDTO:
+      title: OrderProductDTO
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+
+    CustomerDTO:
+      title: CustomerDTO
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerOrderDTO'
+
+    CustomerRequestDTO:
+      title: CustomerRequestDTO
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          maxLength: 225
+          description: Customer name is required
+
+    CustomerOrderDTO:
+      title: CustomerOrderDTO
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+
+    ProductDTO:
+      title: ProductDTO
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        description:
+          type: string
+        orderIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+          uniqueItems: true
+
+    ProductRequestDTO:
+      title: ProductRequestDTO
+      type: object
+      required:
+        - description
+      properties:
+        description:
+          type: string
+          maxLength: 225
+          description: Description is required
+
+    ErrorResponseDTO:
+      title: ErrorResponseDTO
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
+        validationErrors:
+          type: object
+          additionalProperties:
+            type: string
+          description: Field-level validation errors (only present on 400 responses)

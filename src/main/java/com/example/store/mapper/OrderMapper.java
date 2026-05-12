@@ -1,7 +1,7 @@
 package com.example.store.mapper;
 
-import com.example.store.dto.order.OrderDTO;
-import com.example.store.dto.order.OrderRequestDTO;
+import com.example.store.api.model.OrderDTO;
+import com.example.store.api.model.OrderRequestDTO;
 import com.example.store.entity.Order;
 import com.example.store.entity.Product;
 

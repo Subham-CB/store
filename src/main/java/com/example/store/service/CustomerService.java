@@ -1,7 +1,7 @@
 package com.example.store.service;
 
-import com.example.store.dto.customer.CustomerDTO;
-import com.example.store.dto.customer.CustomerRequestDTO;
+import com.example.store.api.model.CustomerDTO;
+import com.example.store.api.model.CustomerRequestDTO;
 
 import org.springframework.data.domain.Pageable;
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-public class CustomerSearchProps {
+public class CustomerSearchDefaults {
     @Value("${customer.search.sort-field:name}")
     private String sortField;
 

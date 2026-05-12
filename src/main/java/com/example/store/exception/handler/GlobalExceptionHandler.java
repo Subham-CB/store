@@ -1,6 +1,6 @@
 package com.example.store.exception.handler;
 
-import com.example.store.dto.ErrorResponseDTO;
+import com.example.store.api.model.ErrorResponseDTO;
 import com.example.store.exception.CustomerNotFoundException;
 import com.example.store.exception.OrderNotFoundException;
 import com.example.store.exception.ProductNotFoundException;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,7 +107,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGeneric(Exception ex, HttpServletRequest request) {
-        ex.printStackTrace();
         return build(
                 HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred. Please try again later.", request);
     }
@@ -120,17 +119,21 @@ public class GlobalExceptionHandler {
                 request.getRequestURI(),
                 message);
 
-        ErrorResponseDTO body = new ErrorResponseDTO(
-                LocalDateTime.now(), status.value(), status.getReasonPhrase(), message, request.getRequestURI());
-
+        ErrorResponseDTO body = new ErrorResponseDTO();
+        body.setTimestamp(OffsetDateTime.now());
+        body.setStatus(status.value());
+        body.setError(status.getReasonPhrase());
+        body.setMessage(message);
+        body.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(body);
     }
 
     private ResponseEntity<ErrorResponseDTO> build(
             HttpStatus status, String message, HttpServletRequest request, Map<String, String> validationErrors) {
         ResponseEntity<ErrorResponseDTO> response = build(status, message, request);
-        response.getBody().setValidationErrors(validationErrors);
-
+        if (response.getBody() != null) {
+            response.getBody().setValidationErrors(validationErrors);
+        }
         return response;
     }
 }

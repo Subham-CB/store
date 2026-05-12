@@ -1,8 +1,8 @@
 package com.example.store.mapper;
 
-import com.example.store.dto.order.OrderProductsDTO;
-import com.example.store.dto.product.ProductDTO;
-import com.example.store.dto.product.ProductRequestDTO;
+import com.example.store.api.model.OrderProductDTO;
+import com.example.store.api.model.ProductDTO;
+import com.example.store.api.model.ProductRequestDTO;
 import com.example.store.entity.Order;
 import com.example.store.entity.Product;
 
@@ -20,7 +20,7 @@ public interface ProductMapper {
     @Mapping(target = "orderIds", source = "orders", qualifiedByName = "mapOrdersToIds")
     ProductDTO productToProductDTO(Product product);
 
-    OrderProductsDTO productToOrderProductsDTO(Product product);
+    OrderProductDTO productToOrderProductsDTO(Product product);
 
     List<ProductDTO> productsToProductDTOs(List<Product> products);
 

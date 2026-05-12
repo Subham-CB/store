@@ -1,6 +1,6 @@
 package com.example.store.util;
 
-import com.example.store.dto.SortEnumDTO;
+import com.example.store.api.model.SortEnumDTO;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -1,7 +1,7 @@
 package com.example.store.service.impl;
 
-import com.example.store.dto.product.ProductDTO;
-import com.example.store.dto.product.ProductRequestDTO;
+import com.example.store.api.model.ProductDTO;
+import com.example.store.api.model.ProductRequestDTO;
 import com.example.store.entity.Product;
 import com.example.store.exception.ProductNotFoundException;
 import com.example.store.mapper.ProductMapper;

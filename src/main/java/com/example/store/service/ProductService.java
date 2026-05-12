@@ -1,7 +1,7 @@
 package com.example.store.service;
 
-import com.example.store.dto.product.ProductDTO;
-import com.example.store.dto.product.ProductRequestDTO;
+import com.example.store.api.model.ProductDTO;
+import com.example.store.api.model.ProductRequestDTO;
 
 import jakarta.validation.Valid;
 
