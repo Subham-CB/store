@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: localshop-app
+    container_name: store
     ports:
       - "8080:8080"
     environment:
@@ -21,7 +21,7 @@ services:
 
   postgres:
     image: postgres:16-alpine
-    container_name: localshop-postgres
+    container_name: store-postgres
     ports:
       - "5433:5432"
     environment:
@@ -39,7 +39,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: localshop-redis
+    container_name: store-redis
     ports:
       - "6379:6379"
     volumes:

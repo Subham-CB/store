@@ -42,7 +42,7 @@ spotless {
 
 openApiGenerate{
     generatorName = "spring"
-    inputSpec = "$rootDir/src/main/resources/openapi/openapi.yaml"
+    inputSpec = "$rootDir/src/main/resources/openapi/OpenAPI.yaml"
     outputDir = generatedRoot.get().asFile.toString()
 
     apiPackage = "com.example.store.api"
