@@ -1,9 +1,9 @@
 package com.example.store.controller;
 
-import com.example.store.component.GlobalSearchProp;
-import com.example.store.dto.OrderCustomerDTO;
-import com.example.store.dto.OrderDTO;
-import com.example.store.dto.OrderRequestDTO;
+import com.example.store.api.model.OrderCustomerDTO;
+import com.example.store.api.model.OrderDTO;
+import com.example.store.api.model.OrderRequestDTO;
+import com.example.store.component.GlobalSearchDefaults;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.service.OrderService;
 import com.example.store.util.PageableBuilder;
@@ -45,7 +45,7 @@ class OrderControllerTests {
     private OrderService orderService;
 
     @MockitoBean
-    private GlobalSearchProp globalSearchProp;
+    private GlobalSearchDefaults globalSearchProp;
 
     @MockitoBean
     private PageableBuilder pageableBuilder;
@@ -108,6 +108,8 @@ class OrderControllerTests {
                 .andExpect(jsonPath("$[0].customer.name").value("John Doe"));
     }
 
+    @Test
+    @DisplayName("GET /order/{id} - Find by id")
     void testGetOrderById() throws Exception {
         Long orderId = 1L;
         when(orderService.findOrderById(orderId)).thenReturn(orderDTO);

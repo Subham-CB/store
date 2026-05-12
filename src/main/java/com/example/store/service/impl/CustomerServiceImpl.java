@@ -1,7 +1,7 @@
 package com.example.store.service.impl;
 
-import com.example.store.dto.CustomerDTO;
-import com.example.store.dto.CustomerRequestDTO;
+import com.example.store.api.model.CustomerDTO;
+import com.example.store.api.model.CustomerRequestDTO;
 import com.example.store.entity.Customer;
 import com.example.store.exception.CustomerNotFoundException;
 import com.example.store.mapper.CustomerMapper;
@@ -15,11 +15,13 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
@@ -37,6 +39,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @CacheEvict(value = "customers", allEntries = true)
     @Override
+    @Transactional
     public CustomerDTO createCustomer(final CustomerRequestDTO customerRequestDTO) {
 
         Customer customer = customerMapper.customerRequestDTOToCustomer(customerRequestDTO);
@@ -45,24 +48,24 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Cacheable(
             value = "customers",
-            key = "'search_' + #name + '_page_' + #pageable.pageNumber + '_size_' + #pageable.pageSize + '_sort_' + #pageable.sort")
+            key =
+                    "'search_' + #name + '_page_' + #pageable.pageNumber + '_size_' + #pageable.pageSize + '_sort_' + #pageable.sort")
     @Override
-    public List<CustomerDTO> findCustomersNameContainingSubString(Pageable pageable,final String name) {
+    public List<CustomerDTO> findCustomersNameContainingSubString(Pageable pageable, final String name) {
 
         final List<Customer> customerPage = customerRepository.findCustomersByNameContainingIgnoreCase(pageable, name);
         return customerMapper.customersToCustomerDTOs(customerPage);
     }
 
-    @CacheEvict(value = "customers",allEntries = true)
+    @CacheEvict(value = "customers", allEntries = true)
     @Override
-    public void clearCustomersCache() {
-    }
+    public void clearCustomersCache() {}
 
-    @Cacheable(value = "customers",key = "'id_'+#id")
+    @Cacheable(value = "customers", key = "'id_'+#id")
     @Override
     public CustomerDTO findCustomerById(final Long id) {
-        Customer customer = customerRepository.findCustomerById(id)
-                .orElseThrow(()-> new CustomerNotFoundException(id));
+        Customer customer =
+                customerRepository.findCustomerById(id).orElseThrow(() -> new CustomerNotFoundException(id));
 
         return customerMapper.customerToCustomerDTO(customer);
     }

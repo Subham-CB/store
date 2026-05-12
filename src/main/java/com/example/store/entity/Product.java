@@ -6,23 +6,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.hibernate.annotations.BatchSize;
-
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
-public class Customer {
+@Entity
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String description;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @BatchSize(size = 20)
+    @ManyToMany(mappedBy = "products", fetch = FetchType.LAZY)
     private Set<Order> orders = new HashSet<>();
 }

@@ -1,9 +1,8 @@
 package com.example.store.service;
 
-import com.example.store.dto.CustomerDTO;
-import com.example.store.dto.CustomerRequestDTO;
+import com.example.store.api.model.CustomerDTO;
+import com.example.store.api.model.CustomerRequestDTO;
 
-import jakarta.validation.constraints.Min;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

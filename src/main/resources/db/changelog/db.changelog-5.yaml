@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5-product-data
+      author: Subham Dey
+      changes:
+        - sqlFile:
+            path: db/changelog/product_data.sql

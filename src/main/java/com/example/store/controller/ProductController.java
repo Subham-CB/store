@@ -1,11 +1,11 @@
 package com.example.store.controller;
 
-import com.example.store.api.OrderApi;
-import com.example.store.api.model.OrderDTO;
-import com.example.store.api.model.OrderRequestDTO;
+import com.example.store.api.ProductApi;
+import com.example.store.api.model.ProductDTO;
+import com.example.store.api.model.ProductRequestDTO;
 import com.example.store.api.model.SortEnumDTO;
 import com.example.store.component.GlobalSearchDefaults;
-import com.example.store.service.OrderService;
+import com.example.store.service.ProductService;
 import com.example.store.util.PageableBuilder;
 
 import lombok.RequiredArgsConstructor;
@@ -19,14 +19,15 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class OrderController implements OrderApi {
+public class ProductController implements ProductApi {
 
-    private final OrderService orderService;
+    private final ProductService productService;
     private final PageableBuilder pageableBuilder;
     private final GlobalSearchDefaults globalSearchDefaults;
 
     @Override
-    public ResponseEntity<List<OrderDTO>> getOrders(Integer page, Integer limit, String sortBy, SortEnumDTO sortDir) {
+    public ResponseEntity<List<ProductDTO>> getProducts(
+            Integer page, Integer limit, String sortBy, SortEnumDTO sortDir) {
 
         Pageable pageable = pageableBuilder.buildPageable(
                 page,
@@ -37,16 +38,16 @@ public class OrderController implements OrderApi {
                 globalSearchDefaults.getSortField(),
                 globalSearchDefaults.getDirection());
 
-        return ResponseEntity.status(HttpStatus.OK).body(orderService.findAllOrders(pageable));
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findAllProducts(pageable));
     }
 
     @Override
-    public ResponseEntity<OrderDTO> getOrderById(Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(orderService.findOrderById(id));
+    public ResponseEntity<ProductDTO> getProductById(Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.findProductById(id));
     }
 
     @Override
-    public ResponseEntity<OrderDTO> createOrder(OrderRequestDTO orderRequestDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(orderRequestDTO));
+    public ResponseEntity<ProductDTO> createProduct(ProductRequestDTO productRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(productRequestDTO));
     }
 }

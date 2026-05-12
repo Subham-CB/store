@@ -1,8 +1,8 @@
 package com.example.store.controller;
 
-import com.example.store.component.CustomerSearchProps;
-import com.example.store.dto.CustomerDTO;
-import com.example.store.dto.CustomerRequestDTO;
+import com.example.store.api.model.CustomerDTO;
+import com.example.store.api.model.CustomerRequestDTO;
+import com.example.store.component.CustomerSearchDefaults;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.service.CustomerService;
 import com.example.store.util.PageableBuilder;
@@ -41,7 +41,7 @@ class CustomerControllerTests {
     private CustomerService customerService;
 
     @MockitoBean
-    private CustomerSearchProps customerSearchProps;
+    private CustomerSearchDefaults customerSearchDefaults;
 
     @MockitoBean
     private PageableBuilder pageableBuilder;
@@ -57,9 +57,9 @@ class CustomerControllerTests {
 
         mockPageable = PageRequest.of(0, 10);
 
-        when(customerSearchProps.getLimit()).thenReturn(20);
-        when(customerSearchProps.getSortField()).thenReturn("name");
-        when(customerSearchProps.getDirection()).thenReturn("asc");
+        when(customerSearchDefaults.getLimit()).thenReturn(20);
+        when(customerSearchDefaults.getSortField()).thenReturn("name");
+        when(customerSearchDefaults.getDirection()).thenReturn("asc");
 
         when(pageableBuilder.buildPageable(any(), any(), any(), any(), anyInt(), anyString(), anyString()))
                 .thenReturn(mockPageable);

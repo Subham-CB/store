@@ -1,0 +1,56 @@
+package com.example.store.service.impl;
+
+import com.example.store.api.model.ProductDTO;
+import com.example.store.api.model.ProductRequestDTO;
+import com.example.store.entity.Product;
+import com.example.store.exception.ProductNotFoundException;
+import com.example.store.mapper.ProductMapper;
+import com.example.store.repository.ProductRepository;
+import com.example.store.service.ProductService;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class ProductServiceImpl implements ProductService {
+
+    private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
+
+    @Cacheable(
+            value = "products",
+            key = "'all_page_' + #pageable.pageNumber + '_size_' + #pageable.pageSize + '_sort_' + #pageable.sort")
+    @Override
+    public List<ProductDTO> findAllProducts(final Pageable pageable) {
+        return productMapper.productsToProductDTOs(
+                productRepository.findAll(pageable).getContent());
+    }
+
+    @Cacheable(value = "products", key = "'Id_' + #id")
+    @Override
+    public ProductDTO findProductById(Long id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+        return productMapper.productToProductDTO(product);
+    }
+
+    @CacheEvict(value = "products", allEntries = true)
+    @Override
+    @Transactional
+    public ProductDTO createProduct(final ProductRequestDTO productRequestDTO) {
+        Product product = productMapper.productRequestDTOToProduct(productRequestDTO);
+        return productMapper.productToProductDTO(productRepository.save(product));
+    }
+
+    @CacheEvict(value = "products", allEntries = true)
+    @Override
+    public void clearProductsCache() {}
+}

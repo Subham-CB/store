@@ -1,15 +1,9 @@
-databaseChangeLog:
-  - changeSet:
-      id: 3-reset-sequences
-      author: de.subham1@gmail.com
-      changes:
-        - sqlFile:
-            path: db/changelog/maintenance.sql
-  - changeSet:
-     id: 3-add-order-customer-id-index
-     author: de.subham1@gmail.com
-     changes:
-       - sql:
-           sql: CREATE INDEX idx_order_customer_id On "order" (customer_id);
+  databaseChangeLog:
+    - changeSet:
+       id: 3-add-order-customer-id-index
+       author: Subham Dey
+       changes:
+         - sql:
+             sql: CREATE INDEX IF NOT EXISTS idx_order_customer_id ON "order" (customer_id);
 
 
