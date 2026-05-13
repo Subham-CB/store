@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 3-reset-sequences
+      id: 6-reset-sequences
       author: Subham Dey
       changes:
         - sqlFile:

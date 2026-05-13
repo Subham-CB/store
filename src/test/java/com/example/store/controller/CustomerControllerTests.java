@@ -55,7 +55,7 @@ class CustomerControllerTests {
         customerDTO.setName("John Doe");
         customerDTO.setId(1L);
 
-        mockPageable = PageRequest.of(0, 10);
+        mockPageable = PageRequest.of(0, 20);
 
         when(customerSearchDefaults.getLimit()).thenReturn(20);
         when(customerSearchDefaults.getSortField()).thenReturn("name");

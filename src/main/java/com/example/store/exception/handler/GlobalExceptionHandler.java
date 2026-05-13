@@ -71,6 +71,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponseDTO> handleDataAccess(DataAccessException ex, HttpServletRequest request) {
 
+        ex.printStackTrace();
         return build(HttpStatus.SERVICE_UNAVAILABLE, "A database error occurred,Please try again", request);
     }
 

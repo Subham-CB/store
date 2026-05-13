@@ -1,0 +1,13 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  data:
+    redis:
+      timeout: 6000ms
+
+logging:
+  level:
+    org.springframework: INFO
