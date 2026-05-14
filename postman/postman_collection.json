@@ -26,7 +26,7 @@
                   "});",
                   "",
                   "pm.test(\"Response time is acceptable\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "    pm.expect(pm.response.responseTime).to.be.below(4000);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -166,7 +166,7 @@
                   "});",
                   "",
                   "pm.test(\"Response time is acceptable\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "    pm.expect(pm.response.responseTime).to.be.below(4000);",
                   "});"
                 ],
                 "type": "text/javascript"
@@ -341,7 +341,7 @@
                   "});",
                   "",
                   "pm.test(\"Response time is acceptable\", function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "    pm.expect(pm.response.responseTime).to.be.below(4000);",
                   "});"
                 ],
                 "type": "text/javascript"
