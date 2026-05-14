@@ -18,6 +18,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true, nullable = false)
     private String description;
 
     @ManyToMany(mappedBy = "products", fetch = FetchType.LAZY)

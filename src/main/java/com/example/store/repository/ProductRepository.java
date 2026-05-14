@@ -16,4 +16,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     WHERE p.id = :id
     """)
     Optional<Product> findProductById(Long id);
+
+    boolean existsByDescriptionIgnoreCase(String description);
 }

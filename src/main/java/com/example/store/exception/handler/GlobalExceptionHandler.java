@@ -2,6 +2,7 @@ package com.example.store.exception.handler;
 
 import com.example.store.api.model.ErrorResponseDTO;
 import com.example.store.exception.CustomerNotFoundException;
+import com.example.store.exception.DuplicateProductException;
 import com.example.store.exception.OrderNotFoundException;
 import com.example.store.exception.ProductNotFoundException;
 
@@ -102,6 +103,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> productNotFound(ProductNotFoundException ex, HttpServletRequest request) {
         return build(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(DuplicateProductException.class)
+    public ResponseEntity<ErrorResponseDTO> duplicateProduct(DuplicateProductException ex, HttpServletRequest request) {
+        return build(HttpStatus.CONFLICT, ex.getMessage(), request);
     }
 
     @ExceptionHandler(Exception.class)

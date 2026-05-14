@@ -422,7 +422,9 @@
                   "if (pm.response.code === 201) {",
                   "    var json = pm.response.json();",
                   "    pm.collectionVariables.set('productId', json.id);",
+                  "    pm.collectionVariables.set('productDescription', json.description);",
                   "    console.log('Saved productId:', json.id);",
+                  "    console.log('Saved productDescription:', json.description);",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -439,7 +441,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"description\": \"EV Car\"\n}",
+              "raw": "{\n    \"description\": \"{{$randomProductName}}\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -451,7 +453,69 @@
               "host": ["{{baseUrl}}"],
               "path": ["product"]
             },
-            "description": "Create a new product. Automatically saves the returned `id` as the `productId` collection variable for use in Get Product by Id."
+            "description": "Create a new product. Uses a random name each run to avoid duplicates. Saves id and description as collection variables."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Duplicate Product",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var description = pm.collectionVariables.get('productDescription');",
+                  "pm.variables.set('productDescription', description);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 409\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has error message\", function () {",
+                  "    var json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('message');",
+                  "});",
+                  "",
+                  "pm.test(\"Error message mentions duplicate description\", function () {",
+                  "    var json = pm.response.json();",
+                  "    var description = pm.collectionVariables.get('productDescription');",
+                  "    pm.expect(json.message).to.include(description);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"description\": \"{{productDescription}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/product",
+              "host": ["{{baseUrl}}"],
+              "path": ["product"]
+            },
+            "description": "Attempts to create a product with the same description as the one just created. Expects 409 Conflict."
           },
           "response": []
         }
@@ -492,6 +556,11 @@
     },
     {
       "key": "productId",
+      "value": "",
+      "description": "Auto-populated by Create Product"
+    },
+    {
+      "key": "productDescription",
       "value": "",
       "description": "Auto-populated by Create Product"
     }

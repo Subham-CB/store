@@ -3,6 +3,7 @@ package com.example.store.service;
 import com.example.store.api.model.ProductDTO;
 import com.example.store.api.model.ProductRequestDTO;
 import com.example.store.entity.Product;
+import com.example.store.exception.DuplicateProductException;
 import com.example.store.exception.ProductNotFoundException;
 import com.example.store.mapper.ProductMapper;
 import com.example.store.repository.ProductRepository;
@@ -111,8 +112,9 @@ public class ProductServiceImplTest {
         verifyNoInteractions(productMapper);
     }
 
+
     @Test
-    @DisplayName("createProduct - maps request, saves entity, returns mapped DTO")
+    @DisplayName("createProduct - maps request, saves entity, returns mapped DTO when no duplicate exists")
     void createProduct_savesAndReturnsMappedDTO() {
         ProductRequestDTO request = new ProductRequestDTO();
         request.setDescription("New Product");
@@ -128,6 +130,7 @@ public class ProductServiceImplTest {
         savedDTO.setId(31L);
         savedDTO.setDescription("New Product");
 
+        when(productRepository.existsByDescriptionIgnoreCase("New Product")).thenReturn(false); // <-- ADD THIS
         when(productMapper.productRequestDTOToProduct(request)).thenReturn(newProduct);
         when(productRepository.save(newProduct)).thenReturn(savedProduct);
         when(productMapper.productToProductDTO(savedProduct)).thenReturn(savedDTO);
@@ -137,8 +140,41 @@ public class ProductServiceImplTest {
         assertThat(result.getId()).isEqualTo(31L);
         assertThat(result.getDescription()).isEqualTo("New Product");
 
+        verify(productRepository).existsByDescriptionIgnoreCase("New Product");
         verify(productMapper).productRequestDTOToProduct(request);
         verify(productRepository).save(newProduct);
         verify(productMapper).productToProductDTO(savedProduct);
+    }
+
+    @Test
+    @DisplayName("createProduct - throws DuplicateProductException when description already exists")
+    void createProduct_duplicateDescription_throwsDuplicateProductException() {
+        ProductRequestDTO request = new ProductRequestDTO();
+        request.setDescription("Mechanical Keyboard");
+
+        when(productRepository.existsByDescriptionIgnoreCase("Mechanical Keyboard")).thenReturn(true);
+
+        assertThatThrownBy(() -> productService.createProduct(request))
+                .isInstanceOf(DuplicateProductException.class)
+                .hasMessageContaining("Mechanical Keyboard");
+
+        verify(productRepository).existsByDescriptionIgnoreCase("Mechanical Keyboard");
+        verify(productRepository, never()).save(any());
+        verifyNoInteractions(productMapper);
+    }
+
+    @Test
+    @DisplayName("createProduct - duplicate check is case insensitive")
+    void createProduct_duplicateDescriptionDifferentCase_throwsDuplicateProductException() {
+        ProductRequestDTO request = new ProductRequestDTO();
+        request.setDescription("mechanical keyboard");
+
+        when(productRepository.existsByDescriptionIgnoreCase("mechanical keyboard")).thenReturn(true);
+
+        assertThatThrownBy(() -> productService.createProduct(request))
+                .isInstanceOf(DuplicateProductException.class)
+                .hasMessageContaining("mechanical keyboard");
+
+        verify(productRepository, never()).save(any());
     }
 }

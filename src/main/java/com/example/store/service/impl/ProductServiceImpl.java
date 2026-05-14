@@ -3,6 +3,7 @@ package com.example.store.service.impl;
 import com.example.store.api.model.ProductDTO;
 import com.example.store.api.model.ProductRequestDTO;
 import com.example.store.entity.Product;
+import com.example.store.exception.DuplicateProductException;
 import com.example.store.exception.ProductNotFoundException;
 import com.example.store.mapper.ProductMapper;
 import com.example.store.repository.ProductRepository;
@@ -50,6 +51,9 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductDTO createProduct(final ProductRequestDTO productRequestDTO) {
         log.info("Creating product: {}", productRequestDTO.getDescription());
+        if (productRepository.existsByDescriptionIgnoreCase(productRequestDTO.getDescription())) {  // <-- ADD THIS
+            throw new DuplicateProductException(productRequestDTO.getDescription());                 // <-- ADD THIS
+        }
         Product product = productRepository.save(productMapper.productRequestDTOToProduct(productRequestDTO));
         log.info("Product created with ID: {}", product.getId());
         return productMapper.productToProductDTO(product);

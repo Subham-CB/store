@@ -88,4 +88,28 @@ public class ProductRepositoryTest extends AbstractRepositoryTest {
 
         assertThat(result).isEmpty();
     }
+
+    @Test
+    @DisplayName("existsByDescriptionIgnoreCase - returns true when product with same description exists")
+    void existsByDescriptionIgnoreCase_existingDescription_returnsTrue() {
+        boolean result = productRepository.existsByDescriptionIgnoreCase("Product With Orders");
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("existsByDescriptionIgnoreCase - returns true when description matches with different case")
+    void existsByDescriptionIgnoreCase_differentCase_returnsTrue() {
+        boolean result = productRepository.existsByDescriptionIgnoreCase("PRODUCT WITH ORDERS");
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    @DisplayName("existsByDescriptionIgnoreCase - returns false when no product with description exists")
+    void existsByDescriptionIgnoreCase_nonExistentDescription_returnsFalse() {
+        boolean result = productRepository.existsByDescriptionIgnoreCase("Non Existent Product");
+
+        assertThat(result).isFalse();
+    }
 }

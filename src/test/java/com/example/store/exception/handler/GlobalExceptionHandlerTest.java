@@ -2,6 +2,7 @@ package com.example.store.exception.handler;
 
 import com.example.store.api.model.ErrorResponseDTO;
 import com.example.store.exception.CustomerNotFoundException;
+import com.example.store.exception.DuplicateProductException;
 import com.example.store.exception.OrderNotFoundException;
 import com.example.store.exception.ProductNotFoundException;
 
@@ -238,6 +239,20 @@ public class GlobalExceptionHandlerTest {
         Assertions.assertNotNull(body);
         assertThat(body.getMessage()).contains("10");
         assertThat(body.getMessage()).contains("20");
+    }
+
+    @Test
+    @DisplayName("duplicateProduct - returns 409 with exception message containing product description")
+    void duplicateProduct_returns409WithExceptionMessage() {
+        DuplicateProductException ex = new DuplicateProductException("Mechanical Keyboard");
+
+        ResponseEntity<ErrorResponseDTO> response = handler.duplicateProduct(ex, request);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        ErrorResponseDTO body = response.getBody();
+        assertCommonFields(body, 409, "Conflict");
+        Assertions.assertNotNull(body);
+        assertThat(body.getMessage()).isEqualTo("A product with description 'Mechanical Keyboard' already exists");
     }
 
     @Test

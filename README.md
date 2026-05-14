@@ -411,15 +411,8 @@ standard authenticated users.
 ### 🔧 Missing Endpoints
 The API currently only supports **create** and **read** operations. The following are missing:
 - `PUT` / `PATCH` — update an existing Customer, Product, or Order
-- `DELETE` — remove a resource 
+- `DELETE` — remove a resource
 
-### 🔁 Duplicate Entities
-As of now, the API is designed to **allow duplicate customers and products** — for example, two customers
-with the same name, or two products with the same description. This was a deliberate design choice to keep
-the initial scope simple, as uniqueness requirements were not specified.
-
-This can be modified for further requirements — for example, by adding a unique constraint on `name` for
-customers and `description` for products, along with a `409 Conflict` response when a duplicate is detected.
 
 ### 📊 Spring Actuator
 Integrate Spring Boot Actuator to expose production-ready operational endpoints such as `/actuator/health`,
