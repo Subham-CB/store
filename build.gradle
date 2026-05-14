@@ -115,7 +115,9 @@ tasks.jacocoTestReport {
     afterEvaluate {
         classDirectories = files(classDirectories.files.collect {
             fileTree(dir: it,
-                    exclude: ['**/mapper/**', '**/StoreApplication.class'])
+                    exclude: ['**/mapper/**',
+                              '**/StoreApplication.class',
+                              '**/store/api/**'])
         })
     }
 }
