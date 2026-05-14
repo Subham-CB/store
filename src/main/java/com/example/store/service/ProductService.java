@@ -15,6 +15,4 @@ public interface ProductService {
     ProductDTO findProductById(Long id);
 
     ProductDTO createProduct(@Valid ProductRequestDTO productRequestDTO);
-
-    void clearProductsCache();
 }

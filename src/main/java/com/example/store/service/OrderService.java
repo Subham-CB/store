@@ -14,6 +14,4 @@ public interface OrderService {
     OrderDTO createOrder(OrderRequestDTO orderRequestDTO);
 
     OrderDTO findOrderById(Long orderId);
-
-    void clearOrdersCache();
 }

@@ -15,7 +15,5 @@ public interface CustomerService {
 
     List<CustomerDTO> findCustomersNameContainingSubString(Pageable pageable, String name);
 
-    void clearCustomersCache();
-
     CustomerDTO findCustomerById(Long id);
 }

@@ -1,72 +1,353 @@
-# Store Application
-The Store application keeps track of customers and orders in a database.
+# 🛒 Store 
 
-# Assumptions
-This README assumes you're using a posix environment. It's possible to run this on Windows as well:
-* Instead of `./gradlew` use `gradlew.bat`
-* The syntax for creating the Docker container is different. You could also install PostgreSQL on bare metal if you prefer
+A Spring Boot REST API for managing **customers**, **products**, and **orders** in a local store.
+Built with Java 21, PostgreSQL, Redis (caching), Liquibase (migrations), and fully containerised with Docker.
 
+---
 
-# Prerequisites
-This service assumes the presence of a postgresql 16.2 database server running on localhost:5433 (note the non-standard port)
-It assumes a username and password `admin:admin` can be used.
-It assumes there's already a database called `store`
+## 📋 Table of Contents
 
-You can start the PostgreSQL instance like this:
-```shell
+- [Tech Stack](#tech-stack)
+- [Data Model](#data-model)
+- [Running the Application](#running-the-application)
+    - [Option 1: With Docker (Recommended)](#option-1-with-docker-recommended)
+    - [Option 2: Without Docker](#option-2-without-docker)
+- [API Endpoints & curl Examples](#api-endpoints--curl-examples)
+    - [Customer](#customer)
+    - [Product](#product)
+    - [Order](#order)
+- [Interactive API Docs](#interactive-api-docs)
+- [CI Pipeline](#ci-pipeline)
+- [Scope for Improvement](#scope-for-improvement)
+
+---
+
+## Tech Stack
+
+| Layer        | Technology                          |
+|--------------|-------------------------------------|
+| Language     | Java 21                             |
+| Framework    | Spring Boot 3.4                     |
+| Database     | PostgreSQL 16                       |
+| Caching      | Redis 7                             |
+| Migrations   | Liquibase                           |
+| Build Tool   | Gradle (Wrapper)                    |
+| Containerise | Docker + Docker Compose             |
+| API Spec     | OpenAPI 3 / Swagger UI              |
+| Code Style   | Spotless (Palantir Java Format)     |
+| Test Coverage| JaCoCo                              |
+
+---
+
+## Data Model
+
+```
+Customer  1 ──── * Order * ──── * Product
+```
+
+- A **Customer** has an ID and a name. They can have zero or more orders.
+- An **Order** has an ID, a description, belongs to one customer, and contains one or more products.
+- A **Product** has an ID and a description. It can appear in multiple orders.
+
+---
+
+## Running the Application
+
+### Option 1: With Docker (Recommended)
+
+#### Prerequisites
+
+| Requirement | Version  |
+|-------------|----------|
+| Docker      | 20.10+   |
+| Docker Compose | v2+   |
+
+> No Java, PostgreSQL, or Redis installation needed — everything runs inside containers.
+
+#### Steps
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/Subham-CB/store.git
+cd store
+
+# 2. (Optional) Customise credentials — defaults are admin/admin
+#    Create a .env file if you want to override:
+#    POSTGRES_USER=admin
+#    POSTGRES_PASSWORD=admin
+#    POSTGRES_DB=store
+
+# 3. Build and start all services (app + postgres + redis)
+docker compose up --build
+
+# 4. The API is now available at:
+#    http://localhost:8080
+```
+
+To run in detached mode (background):
+
+```bash
+docker compose up --build -d
+```
+
+To stop all services:
+
+```bash
+docker compose down
+```
+
+To stop and remove persistent volumes (wipes database data):
+
+```bash
+docker compose down -v
+```
+
+---
+
+### Option 2: Without Docker
+
+#### Prerequisites
+
+| Requirement     | Version / Notes                                      |
+|-----------------|------------------------------------------------------|
+| Java (JDK)      | 21 (Temurin recommended)                             |
+| PostgreSQL      | 16.x — must be running on `localhost:5433`           |
+| Redis           | 7.x — must be running on `localhost:6379`            |
+
+#### PostgreSQL Setup
+
+Create a database and user matching the application defaults:
+
+```bash
+# Start a PostgreSQL instance via Docker (easiest approach for local dev)
 docker run -d \
-  --name postgres \
-  --restart always \
+  --name store-postgres \
   -e POSTGRES_USER=admin \
   -e POSTGRES_PASSWORD=admin \
   -e POSTGRES_DB=store \
-  -v postgres:/var/lib/postgresql/data \
   -p 5433:5432 \
-  postgres:16.2 \
-  postgres -c wal_level=logical
+  postgres:16-alpine
 ```
 
-# Running the application
-You should be able to run the service using
-```shell
+Or if PostgreSQL is already installed locally, create the database manually:
+
+```sql
+CREATE USER admin WITH PASSWORD 'admin';
+CREATE DATABASE store OWNER admin;
+```
+
+#### Redis Setup
+
+```bash
+# Start a Redis instance via Docker
+docker run -d \
+  --name store-redis \
+  -p 6379:6379 \
+  redis:7-alpine
+```
+
+Or install Redis locally and ensure it is running on port `6379`.
+
+#### Steps
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/Subham-CB/store.git
+cd store
+
+# 2. Grant execute permission to Gradle wrapper (Linux/macOS only)
+chmod +x gradlew
+
+# 3. Run the application
 ./gradlew bootRun
+
+# Windows:
+# gradlew.bat bootRun
+
+# 4. The API is now available at:
+#    http://localhost:8080
 ```
 
-The application uses Liquibase to migrate the schema. Some sample data is provided. You can create more data by reading the documentation in utils/README.md
+Liquibase will automatically apply all database migrations and seed sample data on startup.
 
-# Data model
-An order has an ID, a description, and is associated with the customer which made the order.
-A customer has an ID, a name, and 0 or more orders.
+---
 
-# API
-Two endpoints are provided:
-   * /order
-   * /customer
+## API Endpoints & curl Examples
 
-Each of them supports a POST and a GET. The data model is circular - a customer owns a number of orders, and that order necessarily refers back to the customer which owns it.
-To avoid loops in the serializer, when writing out a Customer or an Order, they're mapped to CustomerDTO and OrderDTO which contain truncated versions of the dependent object - CustomerOrderDTO and OrderCustomerDTO respectively.
+> Base URL: `http://localhost:8080`
+>
+> All request/response bodies are `application/json`.
+>
+> **Pagination parameters** (optional, supported on all list endpoints):
+> - `page` — 0-based page number (default: `0`)
+> - `limit` — items per page (default: `30`)
+> - `sortBy` — field name to sort by
+> - `sortDir` — `ASC` or `DESC`
 
-The API is documented in the OpenAPI file OpenAPI.yaml. Note that this spec includes part of one of the tasks below (the new /products endpoint)
+---
 
-# Tasks
+### Customer
 
-1. Extend the order endpoint to find a specific order, by ID
-2. Extend the customer endpoint to find customers based on a query string to match a substring of one of the words in their name
-3. Users have complained that in production the GET endpoints can get very slow. The database is unfortunately not co-located with the application server, and there's high latency between the two. Identify if there are any optimisations that can improve performance
-4. Add a new endpoint /products to model products which appear in an order:
-      * A single order contains 1 or more products. 
-      * A product has an ID and a description. 
-      * Add a POST endpoint to create a product
-      * Add a GET endpoint to return all products, and a specific product by ID
-        * In both cases, also return a list of the order IDs which contain those products
-      * Change the orders endpoint to return a list of products contained in the order
+#### Create a Customer
 
-# Bonus points
-1. Implement a CI pipeline on the platform of your choice to build the project and deliver it as a Dockerized image
+```bash
+curl -X POST http://localhost:8080/customer \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John Clair"}'
+```
 
-# Notes on the tasks
-Assume that the project represents a production application.
-Think carefully about the impact on performance when implementing your changes
-The specifications of the tasks have been left deliberately vague. You will be required to exercise judgement about what to deliver - in a real world environment, you would clarify these points in refinement, but since this is a project to be completed without interaction, feel free to make assumptions - but be prepared to defend them when asked.
-There's no CI pipeline associated with this project, but in reality there would be. Consider the things that you would expect that pipeline to verify before allowing your code to be promoted
-Feel free to refactor the codebase if necessary. Bad choices were deliberately made when creating this project.
+#### Get All Customers
+
+```bash
+curl http://localhost:8080/customer
+```
+
+#### Get All Customers — with Pagination & Sorting
+
+```bash
+curl "http://localhost:8080/customer?page=0&limit=10&sortBy=name&sortDir=ASC"
+```
+
+#### Get All Customers — Filter by Name (substring match)
+
+```bash
+curl "http://localhost:8080/customer?name=john"
+```
+
+#### Get a Customer by ID
+
+```bash
+curl http://localhost:8080/customer/1
+```
+
+---
+
+### Product
+
+#### Create a Product
+
+```bash
+curl -X POST http://localhost:8080/product \
+  -H "Content-Type: application/json" \
+  -d '{"description": "Wireless Keyboard"}'
+```
+
+#### Get All Products
+
+```bash
+curl http://localhost:8080/product
+```
+
+#### Get All Products — with Pagination & Sorting
+
+```bash
+curl "http://localhost:8080/product?page=0&limit=10&sortBy=description&sortDir=ASC"
+```
+
+#### Get a Product by ID
+
+```bash
+curl http://localhost:8080/product/1
+```
+
+---
+
+### Order
+
+#### Create an Order
+
+```bash
+curl -X POST http://localhost:8080/order \
+  -H "Content-Type: application/json" \
+  -d '{
+    "description": "Office supplies order",
+    "customerId": 1,
+    "productIds": [1, 2]
+  }'
+```
+
+> `productIds` must contain **at least 1** existing product ID. `customerId` must reference an existing customer.
+
+#### Get All Orders
+
+```bash
+curl http://localhost:8080/order
+```
+
+#### Get All Orders — with Pagination & Sorting
+
+```bash
+curl "http://localhost:8080/order?page=0&limit=10&sortBy=id&sortDir=DESC"
+```
+
+#### Get an Order by ID
+
+```bash
+curl http://localhost:8080/order/1
+```
+
+---
+
+## Interactive API Docs
+
+Swagger UI is available at:
+
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
+The OpenAPI spec is served at:
+
+```
+http://localhost:8080/v3/api-docs
+```
+
+---
+
+## CI Pipeline
+
+The project uses a GitHub Actions pipeline (`.github/workflows/`) that triggers on every push and pull request to `main`.
+
+### Pipeline Stages
+
+| Stage             | What it does                                                                 |
+|-------------------|------------------------------------------------------------------------------|
+| **Build & Test**  | Checks code formatting (Spotless), runs all tests, generates JaCoCo coverage report |
+| **Docker**        | Builds and pushes the Docker image to Docker Hub (only on merge to `main`)   |
+
+### Docker Images (on merge to `main`)
+
+```
+<DOCKERHUB_USERNAME>/store:latest
+<DOCKERHUB_USERNAME>/store:sha-<git-sha>
+```
+
+### Required GitHub Secrets
+
+| Secret               | Description                        |
+|----------------------|------------------------------------|
+| `DOCKERHUB_USERNAME` | Your Docker Hub username           |
+| `DOCKERHUB_TOKEN`    | Your Docker Hub access token       |
+
+---
+
+## Scope for Improvement
+
+### 🔐 Authentication
+The API is currently fully open with no authentication. JWT-based authentication
+should be integrated via Spring Security so that all endpoints require a valid bearer token before responding.
+
+### 🔐 Authorisation
+Role-based Access Control (RBAC) should be introduced to define roles (e.g. `ADMIN`, `USER`),
+restricting write operations (`POST`, `PUT`, `DELETE`) to privileged users while allowing reads for
+standard authenticated users.
+
+### 🔧 Missing Endpoints
+The API currently only supports **create** and **read** operations. The following are missing:
+- `PUT` / `PATCH` — update an existing Customer, Product, or Order
+- `DELETE` — remove a resource 
+
+
+### 📊 Spring Actuator
+Integrate Spring Boot Actuator to expose production-ready operational endpoints such as `/actuator/health`,
+`/actuator/metrics`, and `/actuator/info`. 
