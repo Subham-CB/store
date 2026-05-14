@@ -17,6 +17,7 @@ Built with Java 21, PostgreSQL, Redis (caching), Liquibase (migrations), and ful
     - [Product](#product)
     - [Order](#order)
 - [Interactive API Docs](#interactive-api-docs)
+- [API Testing with Newman](#api-testing-with-newman)
 - [CI Pipeline](#ci-pipeline)
 - [Scope for Improvement](#scope-for-improvement)
 
@@ -24,18 +25,19 @@ Built with Java 21, PostgreSQL, Redis (caching), Liquibase (migrations), and ful
 
 ## Tech Stack
 
-| Layer        | Technology                          |
-|--------------|-------------------------------------|
-| Language     | Java 21                             |
-| Framework    | Spring Boot 3.4                     |
-| Database     | PostgreSQL 16                       |
-| Caching      | Redis 7                             |
-| Migrations   | Liquibase                           |
-| Build Tool   | Gradle (Wrapper)                    |
-| Containerise | Docker + Docker Compose             |
-| API Spec     | OpenAPI 3 / Swagger UI              |
-| Code Style   | Spotless (Palantir Java Format)     |
-| Test Coverage| JaCoCo                              |
+| Layer         | Technology                      |
+|---------------|---------------------------------|
+| Language      | Java 21                         |
+| Framework     | Spring Boot 3.4                 |
+| Database      | PostgreSQL 16                   |
+| Caching       | Redis 7                         |
+| Migrations    | Liquibase                       |
+| Build Tool    | Gradle (Wrapper)                |
+| Containerise  | Docker + Docker Compose         |
+| API Spec      | OpenAPI 3 / Swagger UI          |
+| Code Style    | Spotless (Palantir Java Format) |
+| Test Coverage | JaCoCo - **99% line coverage**  |
+| Logging       | Slf4j                           |
 
 ---
 
@@ -70,7 +72,9 @@ Customer  1 ──── * Order * ──── * Product
 # 1. Clone the repository
 git clone https://github.com/Subham-CB/store.git
 cd store
+```
 
+```bash
 # 2. (Optional) Customise credentials — defaults are admin/admin
 #    Create a .env file if you want to override:
 #    POSTGRES_USER=admin
@@ -79,7 +83,6 @@ cd store
 
 # 3. Build and start all services (app + postgres + redis)
 docker compose up --build
-
 # 4. The API is now available at:
 #    http://localhost:8080
 ```
@@ -304,6 +307,69 @@ http://localhost:8080/v3/api-docs
 
 ---
 
+## API Testing with Newman
+
+The `postman/` directory contains a Postman collection and environment file that can be used to run the full API test suite via [Newman](https://github.com/postmanlabs/newman) — no Postman desktop app required.
+
+```
+postman/
+├── postman_collection.json   # All requests + test assertions
+└── environment.json          # Environment variables (baseUrl, IDs)
+```
+
+### Requests Covered
+
+| Folder    | Request                     | Method | Assertions                          |
+|-----------|-----------------------------|--------|-------------------------------------|
+| Customers | Get All Customers           | GET    | Status 200, response is array       |
+| Customers | Get Customer by ID          | GET    | Status 200 or 404                   |
+| Customers | Search Customers by Name    | GET    | Status 200, response is array       |
+| Customers | Create Customer             | POST   | Status 201, saves `{{customerId}}`  |
+| Products  | Get All Products            | GET    | Status 200, response is array       |
+| Products  | Get Product by ID           | GET    | Status 200 or 404                   |
+| Products  | Create Product              | POST   | Status 201, saves `{{productId}}`   |
+| Orders    | Get All Orders              | GET    | Status 200, response is array       |
+| Orders    | Get Order by ID             | GET    | Status 200 or 404                   |
+| Orders    | Create Order                | POST   | Status 201, saves `{{orderId}}`     |
+
+### Prerequisites
+
+- Docker installed and running
+- The Store API must be running on port `8080`  
+  (either via `docker compose up` or `./gradlew bootRun`)
+
+### Running the Tests
+
+> Newman runs inside Docker
+
+**macOS / Linux:**
+
+```bash
+docker run --rm \
+  -v $(pwd):/etc/newman \
+  postman/newman run postman/postman_collection.json \
+  --environment postman/environment.json \
+  --env-var "baseUrl=http://host.docker.internal:8080" \
+  -r cli
+```
+
+**Windows (PowerShell):**
+
+```powershell
+docker run --rm `
+  -v ${PWD}:/etc/newman `
+  postman/newman run postman/postman_collection.json `
+  --environment postman/environment.json `
+  --env-var "baseUrl=http://host.docker.internal:8080" `
+  -r cli
+```
+
+**Windows (CMD):**
+
+```cmd
+docker run --rm -v %cd%:/etc/newman postman/newman run postman/postman_collection.json --environment postman/environment.json --env-var "baseUrl=http://host.docker.internal:8080" -r cli
+```
+
 ## CI Pipeline
 
 The project uses a GitHub Actions pipeline (`.github/workflows/`) that triggers on every push and pull request to `main`.
@@ -347,7 +413,16 @@ The API currently only supports **create** and **read** operations. The followin
 - `PUT` / `PATCH` — update an existing Customer, Product, or Order
 - `DELETE` — remove a resource 
 
+### 🔁 Duplicate Entities
+As of now, the API is designed to **allow duplicate customers and products** — for example, two customers
+with the same name, or two products with the same description. This was a deliberate design choice to keep
+the initial scope simple, as uniqueness requirements were not specified.
+
+This can be modified for further requirements — for example, by adding a unique constraint on `name` for
+customers and `description` for products, along with a `409 Conflict` response when a duplicate is detected.
 
 ### 📊 Spring Actuator
 Integrate Spring Boot Actuator to expose production-ready operational endpoints such as `/actuator/health`,
 `/actuator/metrics`, and `/actuator/info`. 
+
+---
