@@ -193,7 +193,7 @@ Liquibase will automatically apply all database migrations and seed sample data 
 ```bash
 curl -X POST http://localhost:8080/customer \
   -H "Content-Type: application/json" \
-  -d '{"name": "Alice Smith"}'
+  -d '{"name": "John Clair"}'
 ```
 
 #### Get All Customers
@@ -211,7 +211,7 @@ curl "http://localhost:8080/customer?page=0&limit=10&sortBy=name&sortDir=ASC"
 #### Get All Customers — Filter by Name (substring match)
 
 ```bash
-curl "http://localhost:8080/customer?name=alice"
+curl "http://localhost:8080/customer?name=john"
 ```
 
 #### Get a Customer by ID

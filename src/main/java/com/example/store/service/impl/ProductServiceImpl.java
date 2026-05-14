@@ -9,6 +9,7 @@ import com.example.store.repository.ProductRepository;
 import com.example.store.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService {
@@ -31,6 +33,7 @@ public class ProductServiceImpl implements ProductService {
             key = "'all_page_' + #pageable.pageNumber + '_size_' + #pageable.pageSize + '_sort_' + #pageable.sort")
     @Override
     public List<ProductDTO> findAllProducts(final Pageable pageable) {
+        log.debug("Fetching all products with pageable:{}", pageable);
         return productMapper.productsToProductDTOs(
                 productRepository.findAll(pageable).getContent());
     }
@@ -46,11 +49,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public ProductDTO createProduct(final ProductRequestDTO productRequestDTO) {
-        Product product = productMapper.productRequestDTOToProduct(productRequestDTO);
-        return productMapper.productToProductDTO(productRepository.save(product));
+        log.info("Creating product: {}", productRequestDTO.getDescription());
+        Product product = productRepository.save(productMapper.productRequestDTOToProduct(productRequestDTO));
+        log.info("Product created with ID: {}", product.getId());
+        return productMapper.productToProductDTO(product);
     }
-
-    @CacheEvict(value = "products", allEntries = true)
-    @Override
-    public void clearProductsCache() {}
 }

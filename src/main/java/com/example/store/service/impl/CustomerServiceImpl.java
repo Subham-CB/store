@@ -9,6 +9,7 @@ import com.example.store.repository.CustomerRepository;
 import com.example.store.service.CustomerService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -32,7 +34,7 @@ public class CustomerServiceImpl implements CustomerService {
             key = "'all_page_' + #pageable.pageNumber + '_size_' + #pageable.pageSize + '_sort_' + #pageable.sort")
     @Override
     public List<CustomerDTO> findCustomers(final Pageable pageable) {
-
+        log.debug("Fetching all customers with pageable={}", pageable);
         final Page<Customer> customerPage = customerRepository.findAll(pageable);
         return customerMapper.customersToCustomerDTOs(customerPage.getContent());
     }
@@ -41,9 +43,13 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public CustomerDTO createCustomer(final CustomerRequestDTO customerRequestDTO) {
+        log.info("Creating customer={}", customerRequestDTO.getName());
 
-        Customer customer = customerMapper.customerRequestDTOToCustomer(customerRequestDTO);
-        return customerMapper.customerToCustomerDTO(customerRepository.save(customer));
+        Customer customer = customerRepository.save(customerMapper.customerRequestDTOToCustomer(customerRequestDTO));
+
+        log.info("Customer successfully created with ID: {}", customer.getId());
+
+        return customerMapper.customerToCustomerDTO(customer);
     }
 
     @Cacheable(
@@ -52,21 +58,16 @@ public class CustomerServiceImpl implements CustomerService {
                     "'search_' + #name + '_page_' + #pageable.pageNumber + '_size_' + #pageable.pageSize + '_sort_' + #pageable.sort")
     @Override
     public List<CustomerDTO> findCustomersNameContainingSubString(Pageable pageable, final String name) {
-
+        log.debug("Searching customers by name substring='{}'", name);
         final List<Customer> customerPage = customerRepository.findCustomersByNameContainingIgnoreCase(pageable, name);
         return customerMapper.customersToCustomerDTOs(customerPage);
     }
-
-    @CacheEvict(value = "customers", allEntries = true)
-    @Override
-    public void clearCustomersCache() {}
 
     @Cacheable(value = "customers", key = "'id_'+#id")
     @Override
     public CustomerDTO findCustomerById(final Long id) {
         Customer customer =
                 customerRepository.findCustomerById(id).orElseThrow(() -> new CustomerNotFoundException(id));
-
         return customerMapper.customerToCustomerDTO(customer);
     }
 }

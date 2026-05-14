@@ -15,6 +15,7 @@ import com.example.store.repository.ProductRepository;
 import com.example.store.service.OrderService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -42,6 +44,7 @@ public class OrderServiceImpl implements OrderService {
             key = "'all_page_' + #pageable.pageNumber + '_size_' + #pageable.pageSize + '_sort_' + #pageable.sort")
     @Override
     public List<OrderDTO> findAllOrders(final Pageable pageable) {
+        log.debug("Fetching all orders with pageable={}", pageable);
         return orderMapper.ordersToOrderDTOs(orderRepository.findAll(pageable).getContent());
     }
 
@@ -49,6 +52,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderDTO createOrder(final OrderRequestDTO orderRequestDTO) {
+
+        log.info("Creating order for customerId={}", orderRequestDTO.getCustomerId());
 
         Customer customer = customerRepository
                 .findById(orderRequestDTO.getCustomerId())
@@ -69,7 +74,15 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setProducts(products);
 
-        return orderMapper.orderToOrderDTO(orderRepository.save(order));
+        Order savedOrder = orderRepository.save(order);
+
+        log.info(
+                "Successfully created order with ID: {} for customer: {}. Products included: {}",
+                savedOrder.getId(),
+                orderRequestDTO.getCustomerId(),
+                orderRequestDTO.getProductIds());
+
+        return orderMapper.orderToOrderDTO(savedOrder);
     }
 
     @Cacheable(value = "orders", key = "'Id_' + #orderId")
@@ -80,8 +93,4 @@ public class OrderServiceImpl implements OrderService {
 
         return orderMapper.orderToOrderDTO(order);
     }
-
-    @CacheEvict(value = "orders", allEntries = true)
-    @Override
-    public void clearOrdersCache() {}
 }

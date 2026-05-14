@@ -9,6 +9,7 @@ import com.example.store.service.CustomerService;
 import com.example.store.util.PageableBuilder;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class CustomerController implements CustomerApi {
@@ -29,6 +31,8 @@ public class CustomerController implements CustomerApi {
     @Override
     public ResponseEntity<List<CustomerDTO>> getCustomers(
             String name, Integer page, Integer limit, String sortBy, SortEnumDTO sortDir) {
+
+        log.debug("GET /customers called with  page={}, limit={}, sortBy={}, sortDir={}", page, limit, sortBy, sortDir);
 
         final Pageable pageable = pageableBuilder.buildPageable(
                 page,
@@ -49,11 +53,13 @@ public class CustomerController implements CustomerApi {
 
     @Override
     public ResponseEntity<CustomerDTO> getCustomerById(Long id) {
+        log.debug("GET /customer/{} called", id);
         return ResponseEntity.ok(customerService.findCustomerById(id));
     }
 
     @Override
     public ResponseEntity<CustomerDTO> createCustomer(CustomerRequestDTO customerRequestDTO) {
+        log.debug("POST /customers called");
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.createCustomer(customerRequestDTO));
     }
 }
