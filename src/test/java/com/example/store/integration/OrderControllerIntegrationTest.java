@@ -4,7 +4,6 @@ import com.example.store.api.model.ErrorResponseDTO;
 import com.example.store.api.model.OrderDTO;
 import com.example.store.api.model.OrderProductDTO;
 import com.example.store.api.model.OrderRequestDTO;
-import com.example.store.integration.config.AbstractIntegrationTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

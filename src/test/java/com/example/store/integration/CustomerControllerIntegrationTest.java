@@ -3,7 +3,6 @@ package com.example.store.integration;
 import com.example.store.api.model.CustomerDTO;
 import com.example.store.api.model.CustomerRequestDTO;
 import com.example.store.api.model.ErrorResponseDTO;
-import com.example.store.integration.config.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

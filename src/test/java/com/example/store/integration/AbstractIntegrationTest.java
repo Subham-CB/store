@@ -1,13 +1,14 @@
-package com.example.store.integration.config;
+package com.example.store.integration;
 
+import com.example.store.test.config.TestContainersConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
-import static com.example.store.integration.config.TestContainersConfig.POSTGRES;
-import static com.example.store.integration.config.TestContainersConfig.REDIS;
+import static com.example.store.test.config.TestContainersConfig.POSTGRES;
+import static com.example.store.test.config.TestContainersConfig.REDIS;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

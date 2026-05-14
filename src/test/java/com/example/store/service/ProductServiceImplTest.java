@@ -6,6 +6,7 @@ import com.example.store.entity.Product;
 import com.example.store.exception.ProductNotFoundException;
 import com.example.store.mapper.ProductMapper;
 import com.example.store.repository.ProductRepository;
+import com.example.store.repository.ProductRepositoryTest;
 import com.example.store.service.impl.ProductServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

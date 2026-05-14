@@ -1,4 +1,4 @@
-package com.example.store.integration.config;
+package com.example.store.test.config;
 
 
 import org.testcontainers.containers.GenericContainer;
