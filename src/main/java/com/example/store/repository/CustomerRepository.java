@@ -19,5 +19,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     LEFT JOIN FETCH c.orders
     WHERE c.id = :id
     """)
-    Optional<Customer> findCustomerById(@Param("id") Long id);
+    Optional<Customer> findCustomerById(Long id);
 }

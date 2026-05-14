@@ -353,6 +353,7 @@ components:
           items:
             type: integer
             format: int64
+          minItems: 1
           uniqueItems: true
           description: Minimum 1 Product ID is required
 

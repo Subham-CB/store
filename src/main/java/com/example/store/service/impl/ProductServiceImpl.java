@@ -38,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
     @Cacheable(value = "products", key = "'Id_' + #id")
     @Override
     public ProductDTO findProductById(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+        Product product = productRepository.findProductById(id).orElseThrow(() -> new ProductNotFoundException(id));
         return productMapper.productToProductDTO(product);
     }
 

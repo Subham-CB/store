@@ -76,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO findOrderById(final Long orderId) {
 
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
+        Order order = orderRepository.findOrderById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
 
         return orderMapper.orderToOrderDTO(order);
     }

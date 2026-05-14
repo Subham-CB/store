@@ -32,6 +32,7 @@ INSERT INTO product (id, description) VALUES (28, 'Ergonomic Cotton Hoodie');
 INSERT INTO product (id, description) VALUES (29, 'Handmade Ceramic Mug');
 INSERT INTO product (id, description) VALUES (30, 'Durable Aluminum Laptop Stand');
 
+
 -- Product ↔ Order mappings
 
 INSERT INTO order_product (order_id, product_id) VALUES (1, 1);
