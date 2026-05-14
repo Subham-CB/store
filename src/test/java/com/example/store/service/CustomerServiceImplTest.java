@@ -7,6 +7,7 @@ import com.example.store.exception.CustomerNotFoundException;
 import com.example.store.mapper.CustomerMapper;
 import com.example.store.repository.CustomerRepository;
 import com.example.store.service.impl.CustomerServiceImpl;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ public class CustomerServiceImplTest {
     private Pageable pageable;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         customer = new Customer();
         customer.setId(1L);
         customer.setName("John Doe");
@@ -85,7 +86,7 @@ public class CustomerServiceImplTest {
 
     @Test
     @DisplayName("findCustomerById - returns mapped DTO when customer exists")
-    void findCustomerById_existingId_returnsMappedDTO(){
+    void findCustomerById_existingId_returnsMappedDTO() {
         when(customerRepository.findCustomerById(1L)).thenReturn(Optional.of(customer));
         when(customerMapper.customerToCustomerDTO(customer)).thenReturn(customerDTO);
 
@@ -101,9 +102,9 @@ public class CustomerServiceImplTest {
 
     @Test
     @DisplayName("findCustomerById - throws CustomerNotFoundException when id does not exist")
-    void findCustomerById_nonExistentId_throwCustomerNotFoundException(){
+    void findCustomerById_nonExistentId_throwCustomerNotFoundException() {
 
-        assertThatThrownBy(()->customerService.findCustomerById(2L))
+        assertThatThrownBy(() -> customerService.findCustomerById(2L))
                 .isInstanceOf(CustomerNotFoundException.class)
                 .hasMessageContaining("2");
 
@@ -170,5 +171,4 @@ public class CustomerServiceImplTest {
         verify(customerRepository).save(newCustomer);
         verify(customerMapper).customerToCustomerDTO(savedCustomer);
     }
-
 }

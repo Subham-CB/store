@@ -6,6 +6,7 @@ import com.example.store.api.model.OrderRequestDTO;
 import com.example.store.entity.Customer;
 import com.example.store.entity.Order;
 import com.example.store.entity.Product;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,14 +20,11 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
-@Import({OrderMapperImpl.class,
-CustomerMapperImpl.class,
-ProductMapperTest.class})
+@Import({OrderMapperImpl.class, CustomerMapperImpl.class, ProductMapperTest.class})
 public class OrderMapperTest {
 
     @Autowired
     private OrderMapper orderMapper;
-
 
     @Test
     @DisplayName("orderToOrderDTO - maps id and description from Order")
@@ -90,12 +88,8 @@ public class OrderMapperTest {
         OrderDTO result = orderMapper.orderToOrderDTO(order);
 
         // default Set<Long> map(Set<Product> products) extracts product ids
-        assertThat(result.getProducts())
-                .extracting(OrderProductDTO::getId)
-                .containsExactlyInAnyOrder(1L, 5L);
+        assertThat(result.getProducts()).extracting(OrderProductDTO::getId).containsExactlyInAnyOrder(1L, 5L);
     }
-
-
 
     @Test
     @DisplayName("ordersToOrderDTOs - maps list of orders to list of DTOs")
@@ -117,9 +111,7 @@ public class OrderMapperTest {
         List<OrderDTO> result = orderMapper.ordersToOrderDTOs(List.of(order1, order2));
 
         assertThat(result).hasSize(2);
-        assertThat(result)
-                .extracting(OrderDTO::getId)
-                .containsExactly(1L, 2L);
+        assertThat(result).extracting(OrderDTO::getId).containsExactly(1L, 2L);
     }
 
     @Test
@@ -130,7 +122,6 @@ public class OrderMapperTest {
         assertThat(result).isNotNull();
         assertThat(result).isEmpty();
     }
-
 
     @Test
     @DisplayName("orderRequestDTOToOrder - maps description from request")
@@ -188,7 +179,6 @@ public class OrderMapperTest {
         assertThat(result.getProducts()).isEmpty();
     }
 
-
     @Test
     @DisplayName("map(Set<Product>) - extracts id from each Product in the set")
     void map_productsToIds_extractsIdsCorrectly() {
@@ -211,5 +201,4 @@ public class OrderMapperTest {
         assertThat(result).isNotNull();
         assertThat(result).isEmpty();
     }
-
 }

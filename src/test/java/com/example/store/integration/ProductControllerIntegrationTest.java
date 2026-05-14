@@ -3,6 +3,7 @@ package com.example.store.integration;
 import com.example.store.api.model.ErrorResponseDTO;
 import com.example.store.api.model.ProductDTO;
 import com.example.store.api.model.ProductRequestDTO;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,10 +25,8 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private CacheManager cacheManager;
 
-
-    private static final Long   SEEDED_PRODUCT_ID          = 1L;
+    private static final Long SEEDED_PRODUCT_ID = 1L;
     private static final String SEEDED_PRODUCT_DESCRIPTION = "Ergonomic Steel Keyboard";
-
 
     @BeforeEach
     void evictCache() {
@@ -37,15 +36,13 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         }
     }
 
-
     @Test
     @DisplayName("POST /product - creates a new product and returns 201 with id and description")
     void createProduct_success_returns201() {
         ProductRequestDTO request = new ProductRequestDTO();
         request.setDescription("Integration Test Product");
 
-        ResponseEntity<ProductDTO> response =
-                testRestTemplate.postForEntity("/product", request, ProductDTO.class);
+        ResponseEntity<ProductDTO> response = testRestTemplate.postForEntity("/product", request, ProductDTO.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
@@ -85,22 +82,19 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         assertThat(response.getBody().getValidationErrors()).containsKey("description");
     }
 
-
     @Test
     @DisplayName("GET /product - returns first page of 30 products (global.search.limit = 30)")
     void getProducts_returnsDefaultPageOf30() {
-        ResponseEntity<ProductDTO[]> response =
-                testRestTemplate.getForEntity("/product", ProductDTO[].class);
+        ResponseEntity<ProductDTO[]> response = testRestTemplate.getForEntity("/product", ProductDTO[].class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         // global.search.limit = 30 in application.yaml — exactly matches the 30 seeded products
         assertThat(response.getBody()).hasSize(30);
-        assertThat(response.getBody())
-                .allSatisfy(product -> {
-                    assertThat(product.getId()).isPositive();
-                    assertThat(product.getDescription()).isNotBlank();
-                });
+        assertThat(response.getBody()).allSatisfy(product -> {
+            assertThat(product.getId()).isPositive();
+            assertThat(product.getDescription()).isNotBlank();
+        });
     }
 
     @Test
@@ -113,7 +107,6 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         Assertions.assertNotNull(response.getBody());
         assertThat(response.getBody().getStatus()).isEqualTo(400);
     }
-
 
     @Test
     @DisplayName("GET /product/1 - returns seeded product with correct description")
@@ -140,16 +133,14 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         request.setDescription("Test New Integration Product");
 
         ResponseEntity<ProductDTO> responseProduct =
-                testRestTemplate.postForEntity("/product",request,ProductDTO.class);
-
+                testRestTemplate.postForEntity("/product", request, ProductDTO.class);
 
         assertThat(responseProduct.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(responseProduct.getBody()).isNotNull();
 
         Long id = responseProduct.getBody().getId();
 
-        ResponseEntity<ProductDTO> response =
-                testRestTemplate.getForEntity("/product/" + id, ProductDTO.class);
+        ResponseEntity<ProductDTO> response = testRestTemplate.getForEntity("/product/" + id, ProductDTO.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -176,7 +167,6 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         assertThat(error.getMessage()).contains("999999");
     }
 
-
     @Test
     @DisplayName("Redis - GET /product/{id} populates cache on first call, eviction clears it")
     void getProductById_cachingAndEviction() {
@@ -186,7 +176,6 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
         String cacheKey = "Id_" + SEEDED_PRODUCT_ID;
 
         assertThat(cache.get(cacheKey)).isNull();
-
 
         ResponseEntity<ProductDTO> firstResponse =
                 testRestTemplate.getForEntity("/product/" + SEEDED_PRODUCT_ID, ProductDTO.class);
@@ -211,7 +200,6 @@ public class ProductControllerIntegrationTest extends AbstractIntegrationTest {
     void createProduct_evictsProductsCache() {
         Cache cache = cacheManager.getCache("products");
         assertThat(cache).isNotNull();
-
 
         testRestTemplate.getForEntity("/product/" + SEEDED_PRODUCT_ID, ProductDTO.class);
         String cacheKey = "Id_" + SEEDED_PRODUCT_ID;

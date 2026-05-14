@@ -3,6 +3,7 @@ package com.example.store.integration;
 import com.example.store.api.model.CustomerDTO;
 import com.example.store.api.model.CustomerRequestDTO;
 import com.example.store.api.model.ErrorResponseDTO;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,10 +25,10 @@ public class CustomerControllerIntegrationTest extends AbstractIntegrationTest {
     private CacheManager cacheManager;
 
     // Known seeded values from data.sql
-    private static final Long   SEEDED_ID        = 1L;
-    private static final String SEEDED_NAME      = "Muriel Donnelly";
-    private static final String SEEDED_SEARCH    = "Glover";
-    private static final int    SEEDED_GLOVER_COUNT = 3;
+    private static final Long SEEDED_ID = 1L;
+    private static final String SEEDED_NAME = "Muriel Donnelly";
+    private static final String SEEDED_SEARCH = "Glover";
+    private static final int SEEDED_GLOVER_COUNT = 3;
 
     @BeforeEach
     void evictCache() {
@@ -40,11 +41,11 @@ public class CustomerControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     @DisplayName("POST /customer - creates a new customer and returns 201 with id and name")
-    void createCustomer_success_returns201(){
+    void createCustomer_success_returns201() {
         CustomerRequestDTO request = new CustomerRequestDTO();
         request.setName("Test Customer");
 
-        ResponseEntity<CustomerDTO> response = testRestTemplate.postForEntity("/customer",request, CustomerDTO.class);
+        ResponseEntity<CustomerDTO> response = testRestTemplate.postForEntity("/customer", request, CustomerDTO.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
@@ -77,26 +78,23 @@ public class CustomerControllerIntegrationTest extends AbstractIntegrationTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).hasSize(SEEDED_GLOVER_COUNT);
-        assertThat(response.getBody())
-                .extracting(CustomerDTO::getName)
-                .allMatch(name -> name.toLowerCase().contains(SEEDED_SEARCH.toLowerCase()));
+        assertThat(response.getBody()).extracting(CustomerDTO::getName).allMatch(name -> name.toLowerCase()
+                .contains(SEEDED_SEARCH.toLowerCase()));
     }
 
     @Test
     @DisplayName("Get /customer - returns first page of 20 customers")
-    void getCustomers_getAll_returnsCustomers(){
+    void getCustomers_getAll_returnsCustomers() {
 
-        ResponseEntity<CustomerDTO[]> response = testRestTemplate
-                .getForEntity("/customer",CustomerDTO[].class);
+        ResponseEntity<CustomerDTO[]> response = testRestTemplate.getForEntity("/customer", CustomerDTO[].class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody()).hasSize(20);//Default limit is set at 20 for first page
-        assertThat(response.getBody())
-                .allSatisfy(customer -> {
-                    assertThat(customer.getId()).isPositive();
-                    assertThat(customer.getName()).isNotNull();
-                });
+        assertThat(response.getBody()).hasSize(20); // Default limit is set at 20 for first page
+        assertThat(response.getBody()).allSatisfy(customer -> {
+            assertThat(customer.getId()).isPositive();
+            assertThat(customer.getName()).isNotNull();
+        });
     }
 
     @Test
@@ -144,7 +142,8 @@ public class CustomerControllerIntegrationTest extends AbstractIntegrationTest {
         ResponseEntity<CustomerDTO> secondResponse =
                 testRestTemplate.getForEntity("/customer/" + SEEDED_ID, CustomerDTO.class);
         assertThat(secondResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(secondResponse.getBody().getName()).isEqualTo(firstResponse.getBody().getName());
+        assertThat(secondResponse.getBody().getName())
+                .isEqualTo(firstResponse.getBody().getName());
 
         cache.evict(cacheKey);
         assertThat(cache.get(cacheKey)).isNull();
@@ -152,23 +151,21 @@ public class CustomerControllerIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     @DisplayName("POST /customer - creating a customer evicts the customers cache")
-    void createCustomer_evictsCustomerCache(){
+    void createCustomer_evictsCustomerCache() {
 
         Cache cache = cacheManager.getCache("customers");
         assertThat(cache).isNotNull();
 
         String cacheKey = "id_" + SEEDED_ID;
 
-        testRestTemplate.getForEntity("/customer/"+ SEEDED_ID, CustomerDTO.class);
+        testRestTemplate.getForEntity("/customer/" + SEEDED_ID, CustomerDTO.class);
         assertThat(cache.get(cacheKey)).isNotNull();
 
         CustomerRequestDTO request = new CustomerRequestDTO();
         request.setName("Evict Test Customer");
 
-        testRestTemplate.postForEntity("/customer",request,CustomerDTO.class);
+        testRestTemplate.postForEntity("/customer", request, CustomerDTO.class);
 
         assertThat(cache.get(cacheKey)).isNull();
-
     }
-
 }

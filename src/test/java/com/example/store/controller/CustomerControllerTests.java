@@ -99,8 +99,7 @@ class CustomerControllerTests {
     @Test
     @DisplayName("POST /customer - returns 400 when request body is missing entirely")
     void createCustomer_noBody_returns400() throws Exception {
-        mockMvc.perform(post("/customer")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/customer").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400));
     }
@@ -174,8 +173,7 @@ class CustomerControllerTests {
     @Test
     @DisplayName("GET /customer/{id} - returns 404 when customer does not exist")
     void getCustomerById_nonExistentId_returns404() throws Exception {
-        when(customerService.findCustomerById(999L))
-                .thenThrow(new CustomerNotFoundException(999L));
+        when(customerService.findCustomerById(999L)).thenThrow(new CustomerNotFoundException(999L));
 
         mockMvc.perform(get("/customer/999"))
                 .andExpect(status().isNotFound())

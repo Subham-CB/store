@@ -6,8 +6,8 @@ import com.example.store.entity.Product;
 import com.example.store.exception.ProductNotFoundException;
 import com.example.store.mapper.ProductMapper;
 import com.example.store.repository.ProductRepository;
-import com.example.store.repository.ProductRepositoryTest;
 import com.example.store.service.impl.ProductServiceImpl;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
-
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceImplTest {
@@ -56,7 +55,6 @@ public class ProductServiceImplTest {
         pageable = PageRequest.of(0, 30);
     }
 
-
     @Test
     @DisplayName("findAllProducts - returns mapped list from repository page")
     void findAllProducts_returnsMappedList() {
@@ -85,7 +83,6 @@ public class ProductServiceImplTest {
         verify(productRepository).findAll(pageable);
     }
 
-
     @Test
     @DisplayName("findProductById - returns mapped DTO when product exists")
     void findProductById_existingId_returnsMappedDTO() {
@@ -113,7 +110,6 @@ public class ProductServiceImplTest {
         verify(productRepository).findProductById(999L);
         verifyNoInteractions(productMapper);
     }
-
 
     @Test
     @DisplayName("createProduct - maps request, saves entity, returns mapped DTO")

@@ -1,6 +1,7 @@
 package com.example.store.repository;
 
 import com.example.store.test.config.TestContainersConfig;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

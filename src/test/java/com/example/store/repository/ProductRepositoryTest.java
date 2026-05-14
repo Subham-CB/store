@@ -3,6 +3,7 @@ package com.example.store.repository;
 import com.example.store.entity.Customer;
 import com.example.store.entity.Order;
 import com.example.store.entity.Product;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ProductRepositoryTest extends AbstractRepositoryTest{
+public class ProductRepositoryTest extends AbstractRepositoryTest {
 
     @Autowired
     private ProductRepository productRepository;
@@ -54,7 +55,6 @@ public class ProductRepositoryTest extends AbstractRepositoryTest{
         entityManager.clear();
     }
 
-
     @Test
     @DisplayName("findProductById - returns product with orders eagerly loaded via LEFT JOIN FETCH")
     void findProductById_existingId_returnsProductWithOrdersLoaded() {
@@ -88,5 +88,4 @@ public class ProductRepositoryTest extends AbstractRepositoryTest{
 
         assertThat(result).isEmpty();
     }
-
 }

@@ -3,6 +3,7 @@ package com.example.store.repository;
 import com.example.store.entity.Customer;
 import com.example.store.entity.Order;
 import com.example.store.entity.Product;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class OrderRepositoryTest extends AbstractRepositoryTest{
+public class OrderRepositoryTest extends AbstractRepositoryTest {
 
     @Autowired
     private OrderRepository orderRepository;
@@ -57,7 +58,6 @@ public class OrderRepositoryTest extends AbstractRepositoryTest{
         entityManager.clear();
     }
 
-
     @Test
     @DisplayName("findOrderById - returns order with customer")
     void findOrderById_existingId_returnsOrderWithCustomerLoaded() {
@@ -82,7 +82,6 @@ public class OrderRepositoryTest extends AbstractRepositoryTest{
                 .extracting(Product::getDescription)
                 .containsExactlyInAnyOrder("Product One", "Product Two");
     }
-
 
     @Test
     @DisplayName("findOrderById - returns empty Optional when id does not exist")

@@ -26,5 +26,4 @@ public class OrderNotFoundExceptionTest {
         assertThat(ex1.getMessage()).contains("1");
         assertThat(ex2.getMessage()).contains("999");
     }
-
 }

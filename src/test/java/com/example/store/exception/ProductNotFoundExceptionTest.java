@@ -28,5 +28,4 @@ public class ProductNotFoundExceptionTest {
         assertThat(ex.getMessage()).contains("10");
         assertThat(ex.getMessage()).contains("20");
     }
-
 }

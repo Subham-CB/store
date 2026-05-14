@@ -5,6 +5,7 @@ import com.example.store.api.model.ProductDTO;
 import com.example.store.api.model.ProductRequestDTO;
 import com.example.store.entity.Order;
 import com.example.store.entity.Product;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,6 @@ public class ProductMapperTest {
 
     @Autowired
     private ProductMapper productMapper;
-
 
     @Test
     @DisplayName("productToProductDTO - maps id and description from Product")
@@ -84,7 +84,6 @@ public class ProductMapperTest {
         assertThat(result.getDescription()).isEqualTo("Rustic Wooden Chair");
     }
 
-
     @Test
     @DisplayName("productsToProductDTOs - maps list of products to list of DTOs")
     void productsToProductDTOs_mapsList() {
@@ -99,9 +98,7 @@ public class ProductMapperTest {
         List<ProductDTO> result = productMapper.productsToProductDTOs(List.of(p1, p2));
 
         assertThat(result).hasSize(2);
-        assertThat(result)
-                .extracting(ProductDTO::getId)
-                .containsExactly(1L, 2L);
+        assertThat(result).extracting(ProductDTO::getId).containsExactly(1L, 2L);
     }
 
     @Test
@@ -112,7 +109,6 @@ public class ProductMapperTest {
         assertThat(result).isNotNull();
         assertThat(result).isEmpty();
     }
-
 
     @Test
     @DisplayName("productRequestDTOToProduct - maps description from request")
@@ -149,7 +145,6 @@ public class ProductMapperTest {
         assertThat(result.getOrders()).isNotNull();
         assertThat(result.getOrders()).isEmpty();
     }
-
 
     @Test
     @DisplayName("mapOrdersToIds - extracts id from each Order in the set")

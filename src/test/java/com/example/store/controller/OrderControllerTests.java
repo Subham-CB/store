@@ -74,7 +74,6 @@ class OrderControllerTests {
         orderRequestDTO.setCustomerId(1L);
         orderRequestDTO.setProductIds(Set.of(1L, 2L));
 
-
         mockPageable = PageRequest.of(0, 30);
 
         when(globalSearchProp.getLimit()).thenReturn(30);
@@ -162,8 +161,7 @@ class OrderControllerTests {
     @Test
     @DisplayName("POST /order - returns 404 when customer does not exist")
     void createOrder_nonExistentCustomer_returns404() throws Exception {
-        when(orderService.createOrder(any()))
-                .thenThrow(new CustomerNotFoundException(999L));
+        when(orderService.createOrder(any())).thenThrow(new CustomerNotFoundException(999L));
 
         mockMvc.perform(post("/order")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -176,8 +174,7 @@ class OrderControllerTests {
     @Test
     @DisplayName("POST /order - returns 404 when product does not exist")
     void createOrder_nonExistentProduct_returns404() throws Exception {
-        when(orderService.createOrder(any()))
-                .thenThrow(new ProductNotFoundException(Set.of(999L)));
+        when(orderService.createOrder(any())).thenThrow(new ProductNotFoundException(Set.of(999L)));
 
         mockMvc.perform(post("/order")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -235,8 +232,7 @@ class OrderControllerTests {
     @Test
     @DisplayName("GET /order/{id} - returns 404 when order does not exist")
     void getOrderById_nonExistentId_returns404() throws Exception {
-        when(orderService.findOrderById(999L))
-                .thenThrow(new OrderNotFoundException(999L));
+        when(orderService.findOrderById(999L)).thenThrow(new OrderNotFoundException(999L));
 
         mockMvc.perform(get("/order/999"))
                 .andExpect(status().isNotFound())

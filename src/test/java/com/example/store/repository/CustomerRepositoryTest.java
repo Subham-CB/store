@@ -2,7 +2,9 @@ package com.example.store.repository;
 
 import com.example.store.entity.Customer;
 import com.example.store.entity.Order;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +32,7 @@ public class CustomerRepositoryTest extends AbstractRepositoryTest {
     private Pageable pageable;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         customerWithOrders = new Customer();
         customerWithOrders.setName("John Test Customer");
 
@@ -50,28 +52,24 @@ public class CustomerRepositoryTest extends AbstractRepositoryTest {
         entityManager.flush();
         entityManager.clear();
 
-        pageable = PageRequest.of(0,20);
+        pageable = PageRequest.of(0, 20);
     }
 
     @Test
     @DisplayName("findCustomersByNameContainingIgnoreCase - returns customers whose name contains substring")
-    void findCustomersByNameContainingIgnoreCase_match_returnsCustomers(){
+    void findCustomersByNameContainingIgnoreCase_match_returnsCustomers() {
 
-        List<Customer> result = customerRepository
-                .findCustomersByNameContainingIgnoreCase(pageable,"John");
+        List<Customer> result = customerRepository.findCustomersByNameContainingIgnoreCase(pageable, "John");
 
         assertThat(result).isNotEmpty();
-        assertThat(result)
-                .extracting(Customer::getName)
-                .allMatch(name->
-                        name.toLowerCase().contains("john"));
+        assertThat(result).extracting(Customer::getName).allMatch(name -> name.toLowerCase()
+                .contains("john"));
     }
 
     @Test
     @DisplayName("findCustomersByNameContainingIgnoreCase - is case insensitive (uppercase search)")
     void findCustomersByNameContainingIgnoreCase_upperCaseSearch_stillMatches() {
-        List<Customer> result = customerRepository
-                .findCustomersByNameContainingIgnoreCase(pageable, "JOHN");
+        List<Customer> result = customerRepository.findCustomersByNameContainingIgnoreCase(pageable, "JOHN");
 
         assertThat(result).isNotEmpty();
     }
@@ -79,8 +77,7 @@ public class CustomerRepositoryTest extends AbstractRepositoryTest {
     @Test
     @DisplayName("findCustomersByNameContainingIgnoreCase - returns empty list when no match")
     void findCustomersByNameContainingIgnoreCase_noMatch_returnsEmptyList() {
-        List<Customer> result = customerRepository
-                .findCustomersByNameContainingIgnoreCase(pageable, "NOMATCH");
+        List<Customer> result = customerRepository.findCustomersByNameContainingIgnoreCase(pageable, "NOMATCH");
 
         assertThat(result).isEmpty();
     }
@@ -97,8 +94,8 @@ public class CustomerRepositoryTest extends AbstractRepositoryTest {
         entityManager.flush();
         entityManager.clear();
 
-        List<Customer> result = customerRepository
-                .findCustomersByNameContainingIgnoreCase(PageRequest.of(0, 2), "Glover");
+        List<Customer> result =
+                customerRepository.findCustomersByNameContainingIgnoreCase(PageRequest.of(0, 2), "Glover");
 
         assertThat(result).hasSize(2);
     }
@@ -106,24 +103,20 @@ public class CustomerRepositoryTest extends AbstractRepositoryTest {
     @Test
     @DisplayName("findCustomerById - returns customer with orders eagerly loaded via LEFT JOIN FETCH")
     void findCustomerById_existingId_returnsCustomerWithOrdersLoaded() {
-        Optional<Customer> result = customerRepository
-                .findCustomerById(customerWithOrders.getId());
+        Optional<Customer> result = customerRepository.findCustomerById(customerWithOrders.getId());
 
         log.info(customerWithOrders.getId().toString());
 
         assertThat(result).isPresent();
         assertThat(result.get().getName()).isEqualTo("John Test Customer");
         assertThat(result.get().getOrders()).hasSize(1);
-        assertThat(result.get().getOrders())
-                .extracting(Order::getDescription)
-                .containsExactly("Test Order");
+        assertThat(result.get().getOrders()).extracting(Order::getDescription).containsExactly("Test Order");
     }
 
     @Test
     @DisplayName("findCustomerById - returns customer with empty orders set when customer has no orders")
     void findCustomerById_customerWithNoOrders_returnsEmptyOrdersSet() {
-        Optional<Customer> result = customerRepository
-                .findCustomerById(customerWithoutOrders.getId());
+        Optional<Customer> result = customerRepository.findCustomerById(customerWithoutOrders.getId());
 
         assertThat(result).isPresent();
         assertThat(result.get().getOrders()).isNotNull();
@@ -148,11 +141,9 @@ public class CustomerRepositoryTest extends AbstractRepositoryTest {
         entityManager.flush();
         entityManager.clear();
 
-        Optional<Customer> result = customerRepository
-                .findCustomerById(customerWithOrders.getId());
+        Optional<Customer> result = customerRepository.findCustomerById(customerWithOrders.getId());
 
         assertThat(result).isPresent();
         assertThat(result.get().getOrders()).hasSize(2);
     }
-
 }

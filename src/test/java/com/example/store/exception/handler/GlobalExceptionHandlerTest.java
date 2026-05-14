@@ -4,7 +4,9 @@ import com.example.store.api.model.ErrorResponseDTO;
 import com.example.store.exception.CustomerNotFoundException;
 import com.example.store.exception.OrderNotFoundException;
 import com.example.store.exception.ProductNotFoundException;
+
 import jakarta.servlet.http.HttpServletRequest;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +48,6 @@ public class GlobalExceptionHandlerTest {
     void setUp() {
         when(request.getRequestURI()).thenReturn("/test-path");
     }
-
 
     private void assertCommonFields(ErrorResponseDTO body, int expectedStatus, String expectedError) {
         assertThat(body).isNotNull();
@@ -95,7 +96,6 @@ public class GlobalExceptionHandlerTest {
                 .containsEntry("customerId", "must not be null");
     }
 
-
     @Test
     @DisplayName("handleTypeMismatch - returns 400 with parameter name and value in message")
     void handleTypeMismatch_returns400WithParameterDetails() {
@@ -113,12 +113,11 @@ public class GlobalExceptionHandlerTest {
         assertThat(body.getMessage()).contains("INVALID");
     }
 
-
     @Test
     @DisplayName("handlePropertyReference - returns 400 with field name in message")
     void handlePropertyReference_returns400WithFieldName() {
-        PropertyReferenceException ex = new PropertyReferenceException(
-                "unknownField", TypeInformation.of(Object.class), List.of());
+        PropertyReferenceException ex =
+                new PropertyReferenceException("unknownField", TypeInformation.of(Object.class), List.of());
 
         ResponseEntity<ErrorResponseDTO> response = handler.handlePropertyReference(ex, request);
 
@@ -127,7 +126,6 @@ public class GlobalExceptionHandlerTest {
         assertCommonFields(body, 400, "Bad Request");
         assertThat(body.getMessage()).contains("unknownField");
     }
-
 
     @Test
     @DisplayName("handleUnreadable - returns 400 with malformed body message")
@@ -142,7 +140,6 @@ public class GlobalExceptionHandlerTest {
         assertThat(body.getMessage()).isEqualTo("Malformed or missing body request");
     }
 
-
     @Test
     @DisplayName("handleDataAccess - returns 503 with database error message")
     void handleDataAccess_returns503WithDatabaseErrorMessage() {
@@ -155,7 +152,6 @@ public class GlobalExceptionHandlerTest {
         assertCommonFields(body, 503, "Service Unavailable");
         assertThat(body.getMessage()).isEqualTo("A database error occurred,Please try again");
     }
-
 
     @Test
     @DisplayName("handleMethodNotSupported - returns 405 with http method name in message")
@@ -172,12 +168,11 @@ public class GlobalExceptionHandlerTest {
         assertThat(body.getMessage()).contains("not supported");
     }
 
-
     @Test
     @DisplayName("handleNoResource - returns 404 with resource not found message")
     void handleNoResource_returns404WithNotFoundMessage() throws Exception {
-        NoResourceFoundException ex = new NoResourceFoundException(
-                org.springframework.http.HttpMethod.GET, "/unknown/path");
+        NoResourceFoundException ex =
+                new NoResourceFoundException(org.springframework.http.HttpMethod.GET, "/unknown/path");
 
         ResponseEntity<ErrorResponseDTO> response = handler.handleNoResource(ex, request);
 
@@ -187,7 +182,6 @@ public class GlobalExceptionHandlerTest {
         Assertions.assertNotNull(body);
         assertThat(body.getMessage()).isEqualTo("The requested resource was not found");
     }
-
 
     @Test
     @DisplayName("customerNotFound - returns 404 with exception message containing customer id")
@@ -203,7 +197,6 @@ public class GlobalExceptionHandlerTest {
         assertThat(body.getMessage()).isEqualTo("Customer not found with Id : 42");
     }
 
-
     @Test
     @DisplayName("orderNotFound - returns 404 with exception message containing order id")
     void orderNotFound_returns404WithExceptionMessage() {
@@ -217,7 +210,6 @@ public class GlobalExceptionHandlerTest {
         Assertions.assertNotNull(body);
         assertThat(body.getMessage()).isEqualTo("Order not found with Id: 7");
     }
-
 
     @Test
     @DisplayName("productNotFound - returns 404 with single product id in message")
@@ -248,7 +240,6 @@ public class GlobalExceptionHandlerTest {
         assertThat(body.getMessage()).contains("20");
     }
 
-
     @Test
     @DisplayName("handleGeneric - returns 500 with generic unexpected error message")
     void handleGeneric_returns500WithGenericMessage() {
@@ -263,7 +254,6 @@ public class GlobalExceptionHandlerTest {
         assertThat(body.getMessage()).isEqualTo("An unexpected error occurred. Please try again later.");
         assertThat(body.getMessage()).doesNotContain("something internal broke");
     }
-
 
     @Test
     @DisplayName("build - response body always has timestamp, status, error, message, and path")

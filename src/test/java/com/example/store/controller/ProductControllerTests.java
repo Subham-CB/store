@@ -8,7 +8,9 @@ import com.example.store.mapper.CustomerMapper;
 import com.example.store.service.ProductService;
 import com.example.store.util.PageableBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import lombok.RequiredArgsConstructor;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -115,8 +117,7 @@ public class ProductControllerTests {
     @Test
     @DisplayName("POST /product - returns 400 when request body is missing entirely")
     void createProduct_noBody_returns400() throws Exception {
-        mockMvc.perform(post("/product")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/product").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.status").value(400));
     }
@@ -167,8 +168,7 @@ public class ProductControllerTests {
     @Test
     @DisplayName("GET /product/{id} - returns 404 when product does not exist")
     void getProductById_nonExistentId_returns404() throws Exception {
-        when(productService.findProductById(999L))
-                .thenThrow(new ProductNotFoundException(999L));
+        when(productService.findProductById(999L)).thenThrow(new ProductNotFoundException(999L));
 
         mockMvc.perform(get("/product/999"))
                 .andExpect(status().isNotFound())

@@ -1,6 +1,5 @@
 package com.example.store.exception;
 
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -27,5 +26,4 @@ public class CustomerNotFoundExceptionTest {
         assertThat(ex1.getMessage()).contains("1");
         assertThat(ex2.getMessage()).contains("999");
     }
-
 }

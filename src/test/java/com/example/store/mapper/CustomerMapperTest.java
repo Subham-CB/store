@@ -6,6 +6,7 @@ import com.example.store.api.model.CustomerRequestDTO;
 import com.example.store.api.model.OrderCustomerDTO;
 import com.example.store.entity.Customer;
 import com.example.store.entity.Order;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +25,6 @@ public class CustomerMapperTest {
 
     @Autowired
     private CustomerMapper customerMapper;
-
 
     @Test
     @DisplayName("customerToCustomerDTO - maps id and name from Customer")
@@ -91,11 +91,8 @@ public class CustomerMapperTest {
         CustomerDTO result = customerMapper.customerToCustomerDTO(customer);
 
         assertThat(result.getOrders()).hasSize(2);
-        assertThat(result.getOrders())
-                .extracting(CustomerOrderDTO::getId)
-                .containsExactlyInAnyOrder(1L, 2L);
+        assertThat(result.getOrders()).extracting(CustomerOrderDTO::getId).containsExactlyInAnyOrder(1L, 2L);
     }
-
 
     @Test
     @DisplayName("customerToOrderCustomerDTO - maps id and name only")
@@ -109,7 +106,6 @@ public class CustomerMapperTest {
         assertThat(result.getId()).isEqualTo(5L);
         assertThat(result.getName()).isEqualTo("Vicki Kutch");
     }
-
 
     @Test
     @DisplayName("customersToCustomerDTOs - maps list of customers to list of DTOs")
@@ -125,9 +121,7 @@ public class CustomerMapperTest {
         List<CustomerDTO> result = customerMapper.customersToCustomerDTOs(List.of(c1, c2));
 
         assertThat(result).hasSize(2);
-        assertThat(result)
-                .extracting(CustomerDTO::getName)
-                .containsExactly("Alice", "Bob");
+        assertThat(result).extracting(CustomerDTO::getName).containsExactly("Alice", "Bob");
     }
 
     @Test
@@ -138,7 +132,6 @@ public class CustomerMapperTest {
         assertThat(result).isNotNull();
         assertThat(result).isEmpty();
     }
-
 
     @Test
     @DisplayName("customerRequestDTOToCustomer - maps name from request")
@@ -175,7 +168,6 @@ public class CustomerMapperTest {
         assertThat(result.getOrders()).isNotNull();
         assertThat(result.getOrders()).isEmpty();
     }
-
 
     @Test
     @DisplayName("orderToCustomerOrderDTO - maps id and description from Order")

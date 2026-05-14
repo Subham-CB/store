@@ -4,6 +4,7 @@ import com.example.store.api.model.ErrorResponseDTO;
 import com.example.store.api.model.OrderDTO;
 import com.example.store.api.model.OrderProductDTO;
 import com.example.store.api.model.OrderRequestDTO;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,6 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 
 import java.util.Set;
 
@@ -29,14 +29,14 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
     private CacheManager cacheManager;
 
     // Seeded data facts from data.sql and product_data.sql
-    private static final Long   SEEDED_ORDER_ID          = 1L;
+    private static final Long SEEDED_ORDER_ID = 1L;
     private static final String SEEDED_ORDER_DESCRIPTION = "Handcrafted Soft Chair";
-    private static final Long   SEEDED_CUSTOMER_ID       = 6L;
-    private static final String SEEDED_CUSTOMER_NAME     = "Vicki Kutch";
+    private static final Long SEEDED_CUSTOMER_ID = 6L;
+    private static final String SEEDED_CUSTOMER_NAME = "Vicki Kutch";
 
     // Valid seeded IDs to use when creating an order
-    private static final Long   CREATE_CUSTOMER_ID       = 1L;   // Muriel Donnelly
-    private static final Set<Long> CREATE_PRODUCT_IDS   = Set.of(1L, 2L); // Ergonomic Steel Keyboard, Rustic Wooden Chair
+    private static final Long CREATE_CUSTOMER_ID = 1L; // Muriel Donnelly
+    private static final Set<Long> CREATE_PRODUCT_IDS = Set.of(1L, 2L); // Ergonomic Steel Keyboard, Rustic Wooden Chair
 
     @BeforeEach
     void evictCache() {
@@ -55,8 +55,7 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
         request.setCustomerId(CREATE_CUSTOMER_ID);
         request.setProductIds(CREATE_PRODUCT_IDS);
 
-        ResponseEntity<OrderDTO> response =
-                testRestTemplate.postForEntity("/order", request, OrderDTO.class);
+        ResponseEntity<OrderDTO> response = testRestTemplate.postForEntity("/order", request, OrderDTO.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
@@ -65,16 +64,12 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
         assertThat(body.getId()).isPositive();
         assertThat(body.getDescription()).isEqualTo("Integration Test Order");
 
-
         assertThat(body.getCustomer()).isNotNull();
         assertThat(body.getCustomer().getId()).isEqualTo(CREATE_CUSTOMER_ID);
         assertThat(body.getCustomer().getName()).isEqualTo("Muriel Donnelly");
 
-
         assertThat(body.getProducts()).isNotNull();
-        assertThat(body.getProducts())
-                .extracting(OrderProductDTO::getId)
-                .containsExactlyInAnyOrder(1L, 2L);
+        assertThat(body.getProducts()).extracting(OrderProductDTO::getId).containsExactlyInAnyOrder(1L, 2L);
     }
 
     @Test
@@ -140,32 +135,26 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
         assertThat(response.getBody().getMessage()).contains("999999");
     }
 
-
-
     @Test
     @DisplayName("GET /order - returns first page of 30 orders")
     void getOrders_returnsDefaultPageOf30() {
-        ResponseEntity<OrderDTO[]> response =
-                testRestTemplate.getForEntity("/order", OrderDTO[].class);
+        ResponseEntity<OrderDTO[]> response = testRestTemplate.getForEntity("/order", OrderDTO[].class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody()).hasSize(30);
-        assertThat(response.getBody())
-                .allSatisfy(order -> {
-                    assertThat(order.getId()).isPositive();
-                    assertThat(order.getDescription()).isNotBlank();
-                    assertThat(order.getCustomer()).isNotNull();
-                    assertThat(order.getCustomer().getId()).isPositive();
-                });
+        assertThat(response.getBody()).allSatisfy(order -> {
+            assertThat(order.getId()).isPositive();
+            assertThat(order.getDescription()).isNotBlank();
+            assertThat(order.getCustomer()).isNotNull();
+            assertThat(order.getCustomer().getId()).isPositive();
+        });
     }
-
 
     @Test
     @DisplayName("GET /order/1 - returns seeded order with correct description and customer")
     void getOrderById_seededId_returnsCorrectOrder() {
-        ResponseEntity<OrderDTO> response =
-                testRestTemplate.getForEntity("/order/" + SEEDED_ORDER_ID, OrderDTO.class);
+        ResponseEntity<OrderDTO> response = testRestTemplate.getForEntity("/order/" + SEEDED_ORDER_ID, OrderDTO.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -174,16 +163,12 @@ public class OrderControllerIntegrationTest extends AbstractIntegrationTest {
         assertThat(body.getId()).isEqualTo(SEEDED_ORDER_ID);
         assertThat(body.getDescription()).isEqualTo(SEEDED_ORDER_DESCRIPTION);
 
-
         assertThat(body.getCustomer()).isNotNull();
         assertThat(body.getCustomer().getId()).isEqualTo(SEEDED_CUSTOMER_ID);
         assertThat(body.getCustomer().getName()).isEqualTo(SEEDED_CUSTOMER_NAME);
 
-
         assertThat(body.getProducts()).isNotNull();
-        assertThat(body.getProducts())
-                .extracting(OrderProductDTO::getId)
-                .containsExactlyInAnyOrder(1L, 5L);
+        assertThat(body.getProducts()).extracting(OrderProductDTO::getId).containsExactlyInAnyOrder(1L, 5L);
     }
 
     @Test

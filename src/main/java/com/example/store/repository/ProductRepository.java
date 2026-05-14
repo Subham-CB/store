@@ -2,7 +2,6 @@ package com.example.store.repository;
 
 import com.example.store.entity.Product;
 
-import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,5 +16,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     WHERE p.id = :id
     """)
     Optional<Product> findProductById(Long id);
-
 }
