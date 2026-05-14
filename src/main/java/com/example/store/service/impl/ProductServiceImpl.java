@@ -51,8 +51,8 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductDTO createProduct(final ProductRequestDTO productRequestDTO) {
         log.info("Creating product: {}", productRequestDTO.getDescription());
-        if (productRepository.existsByDescriptionIgnoreCase(productRequestDTO.getDescription())) {  // <-- ADD THIS
-            throw new DuplicateProductException(productRequestDTO.getDescription());                 // <-- ADD THIS
+        if (productRepository.existsByDescriptionIgnoreCase(productRequestDTO.getDescription())) { // <-- ADD THIS
+            throw new DuplicateProductException(productRequestDTO.getDescription()); // <-- ADD THIS
         }
         Product product = productRepository.save(productMapper.productRequestDTOToProduct(productRequestDTO));
         log.info("Product created with ID: {}", product.getId());

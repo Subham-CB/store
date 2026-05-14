@@ -112,7 +112,6 @@ public class ProductServiceImplTest {
         verifyNoInteractions(productMapper);
     }
 
-
     @Test
     @DisplayName("createProduct - maps request, saves entity, returns mapped DTO when no duplicate exists")
     void createProduct_savesAndReturnsMappedDTO() {
@@ -152,7 +151,8 @@ public class ProductServiceImplTest {
         ProductRequestDTO request = new ProductRequestDTO();
         request.setDescription("Mechanical Keyboard");
 
-        when(productRepository.existsByDescriptionIgnoreCase("Mechanical Keyboard")).thenReturn(true);
+        when(productRepository.existsByDescriptionIgnoreCase("Mechanical Keyboard"))
+                .thenReturn(true);
 
         assertThatThrownBy(() -> productService.createProduct(request))
                 .isInstanceOf(DuplicateProductException.class)
@@ -169,7 +169,8 @@ public class ProductServiceImplTest {
         ProductRequestDTO request = new ProductRequestDTO();
         request.setDescription("mechanical keyboard");
 
-        when(productRepository.existsByDescriptionIgnoreCase("mechanical keyboard")).thenReturn(true);
+        when(productRepository.existsByDescriptionIgnoreCase("mechanical keyboard"))
+                .thenReturn(true);
 
         assertThatThrownBy(() -> productService.createProduct(request))
                 .isInstanceOf(DuplicateProductException.class)

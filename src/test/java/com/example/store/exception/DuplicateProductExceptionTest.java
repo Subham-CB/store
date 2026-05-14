@@ -26,5 +26,4 @@ public class DuplicateProductExceptionTest {
         assertThat(ex1.getMessage()).contains("Keyboard");
         assertThat(ex2.getMessage()).contains("Mouse");
     }
-
 }
